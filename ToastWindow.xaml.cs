@@ -20,11 +20,14 @@ namespace DateReminder
             ToastTitle.Content = title;
             ToastDescription.Content = message;
         }
+        protected override void OnActivated(EventArgs e)
+        {
+            HandleLifeTime();
+            InitializeTimer();
+        }
         private void InitializeToastWindow()
         {
             InitializeComponent();
-            HandleLifeTime();
-            InitializeTimer();
         }
         private void InitializeTimer()
         {
@@ -35,7 +38,7 @@ namespace DateReminder
         }
         private void Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("Tick");
+            //Console.WriteLine("Tick");
         }
         private async Task HandleLifeTime()
         {
@@ -59,6 +62,10 @@ namespace DateReminder
 
             Left = ScreenWidth - this.Width;
             Top = 0;
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            ToastsManager.Instance.RemoveToast(this);
         }
     }
 }

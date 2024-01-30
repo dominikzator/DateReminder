@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using Azure;
 using System.IO;
 using System.Media;
+using Microsoft.Extensions.DependencyInjection;
+using Autofac;
 
 namespace DateReminder
 {
@@ -24,11 +26,14 @@ namespace DateReminder
     public partial class MainWindow : Window
     {
         private SoundPlayer player;
+
+        private ToastsManager toastsManager;
         public MainWindow()
         {
             InitializeComponent();
-            player = new SoundPlayer(Properties.Resources.popSound);
-            player.Load();
+            toastsManager = ToastsManager.Instance;
+
+            InitializeToastSound();
 
             using (var context = new ReminderDBContext())
             {
@@ -53,17 +58,40 @@ namespace DateReminder
                 //context.SaveChanges();
             }
         }
-
+        private void InitializeToastSound()
+        {
+            player = new SoundPlayer(Properties.Resources.popSound);
+            player.Load();
+        }
         private async void Fire_Notification(object sender, RoutedEventArgs e)
         {
-            await OpenToastWithDelay(5);
+            //FireManyRandomToastsDifferentInterval();
+            FireTooMuchToastsAtOneTime();
+        }
+        private async Task FireTooMuchToastsAtOneTime()
+        {
+            for (int i = 0; i < 40; i++)
+            {
+                OpenToastWithDelay(3f, $"Title {i}", $"Description {i}");
+            }
+        }
+        private async Task FireManyRandomToastsDifferentInterval()
+        {
+            int numberOfToasts = 15;
+
+            for (int i = 0; i < numberOfToasts; i++)
+            {
+                var random = new Random();
+                int randomInterval = random.Next(0, 5);
+                OpenToastWithDelay(randomInterval, $"Title {i}", $"Description {i}");
+            }
         }
 
-        private async UniTask OpenToastWithDelay(double delayInSeconds)
+        private async Task OpenToastWithDelay(double delayInSeconds, string toastTitle, string toastDescription)
         {
             await Task.Delay((int)(delayInSeconds * 1000));
-            ToastWindow toast = new ToastWindow("You have a new Reminder", "Urodziny Sylwii.");
-            toast.Show();
+            ToastWindow toast = new ToastWindow(toastTitle, toastDescription);
+            ToastsManager.Instance.AddToast(toast);
             player.Play();
         }
 

@@ -27,6 +27,7 @@ namespace DateReminder
         private const int ToastMargin = 5;
 
         public int MaxToastsOnScreen;
+        public int ToastsOpened, ToastsClosed;
 
         public List<ToastWindow> Toasts = new List<ToastWindow>();
         public List<ToastWindow> PendingToasts = new List<ToastWindow>();

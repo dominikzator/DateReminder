@@ -6,19 +6,20 @@
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
         Title="ToastWindow" Height="60
-        " Width="300" Loaded="OnToastWindowLoaded" ResizeMode="NoResize" UseLayoutRounding="False" WindowStyle="None" Topmost="True">
+        " Width="249" Loaded="OnToastWindowLoaded" ResizeMode="NoResize" UseLayoutRounding="False" WindowStyle="None" Topmost="True">
 
     <Grid Width="300">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="73*"/>
+            <ColumnDefinition Width="27*"/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="ToastBorder" HorizontalAlignment="Left" Height="142" VerticalAlignment="Center" Width="13" Fill="#FFFFC107" Stroke="#FF737373" />
-        <Image x:Name="ToastIcon" HorizontalAlignment="Left" Height="24" Margin="18,0,0,0" VerticalAlignment="Center" Width="25" Source="/icons8-warning-48.png" Stretch="UniformToFill" Grid.ColumnSpan="4"/>
-        <Label x:Name="ToastTitle" Content="Typesaasdasddddddddd" HorizontalAlignment="Left" Margin="52,4,0,0" VerticalAlignment="Top" Width="238" FontWeight="Bold" FontFamily="MV Boli"/>
-        <Label x:Name="ToastDescription" Content="Toast Message" HorizontalAlignment="Left" Margin="52,30,0,0" VerticalAlignment="Top" Width="237" FontSize="10" Grid.ColumnSpan="4" FontFamily="MV Boli"/>
-        <Viewbox Grid.ColumnSpan="4"/>
+        <Rectangle x:Name="ToastBorder" HorizontalAlignment="Left" Height="142" VerticalAlignment="Center" Width="13" Fill="#FFF9B84F" Stroke="#FF737373" />
+        <Image x:Name="ToastIcon" HorizontalAlignment="Left" Height="24" Margin="17,0,0,0" VerticalAlignment="Center" Width="25" Source="/RingBell.png" Stretch="UniformToFill"/>
+        <Label x:Name="ToastTitle" Content="You have 123456789|123456789|" HorizontalAlignment="Left" Margin="44,4,0,0" VerticalAlignment="Top" Width="255" FontWeight="Bold" FontFamily="MV Boli" FontSize="11" Grid.ColumnSpan="2"/>
+        <Label x:Name="ToastDescription" Content="In 3 Days" HorizontalAlignment="Left" Margin="44,29,0,0" VerticalAlignment="Top" Width="255" FontSize="10" FontFamily="MV Boli" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>

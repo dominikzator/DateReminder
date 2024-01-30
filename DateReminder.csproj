@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="icons8-success-48.png" />
     <None Remove="icons8-warning-48.png" />
+    <None Remove="RingBell.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,7 @@
   <ItemGroup>
     <Resource Include="icons8-success-48.png" />
     <Resource Include="icons8-warning-48.png" />
+    <Resource Include="RingBell.png" />
   </ItemGroup>
 
   <ItemGroup>

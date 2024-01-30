@@ -117,5 +117,15 @@ namespace DateReminder.Properties {
                 return ResourceManager.GetStream("popSound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] RingBell {
+            get {
+                object obj = ResourceManager.GetObject("RingBell", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

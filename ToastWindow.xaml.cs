@@ -24,6 +24,9 @@ namespace DateReminder
         {
             HandleLifeTime();
             InitializeTimer();
+            ToastsManager.Instance.ToastsOpened++;
+            //Console.WriteLine("ToastsManager.Instance.ToastsOpened: " + ToastsManager.Instance.ToastsOpened);
+            //Console.WriteLine("ToastsManager.Instance.ToastsClosed: " + ToastsManager.Instance.ToastsClosed);
         }
         private void InitializeToastWindow()
         {
@@ -42,9 +45,7 @@ namespace DateReminder
         }
         private async Task HandleLifeTime()
         {
-            Console.WriteLine("Started Lifetime");
             await Task.Delay((int)(lifeTimeInSeconds * 1000f));
-            Console.WriteLine("Ended Lifetime");
             Close();
         }
         private void OnToastWindowLoaded(object sender, EventArgs e)
@@ -66,6 +67,9 @@ namespace DateReminder
         protected override void OnClosed(EventArgs e)
         {
             ToastsManager.Instance.RemoveToast(this);
+            ToastsManager.Instance.ToastsClosed++;
+            //Console.WriteLine("ToastsManager.Instance.ToastsOpened: " + ToastsManager.Instance.ToastsOpened);
+            //Console.WriteLine("ToastsManager.Instance.ToastsClosed: " + ToastsManager.Instance.ToastsClosed);
         }
     }
 }

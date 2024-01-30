@@ -65,8 +65,8 @@ namespace DateReminder
         }
         private async void Fire_Notification(object sender, RoutedEventArgs e)
         {
-            //FireManyRandomToastsDifferentInterval();
-            FireTooMuchToastsAtOneTime();
+            FireManyRandomToastsDifferentInterval();
+            //FireTooMuchToastsAtOneTime();
         }
         private async Task FireTooMuchToastsAtOneTime()
         {

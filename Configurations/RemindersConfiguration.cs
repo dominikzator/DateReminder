@@ -13,7 +13,7 @@ namespace DateReminder.Configurations
         public void Configure(EntityTypeBuilder<Reminder> builder)
         {
             builder.HasIndex(x => x.Id).IsUnique();
-            builder.Property(p => p.Title).HasMaxLength(20);
+            builder.Property(p => p.Title).HasMaxLength(20).IsRequired();
         }
     }
 }

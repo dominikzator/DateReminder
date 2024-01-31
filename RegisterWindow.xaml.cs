@@ -15,25 +15,17 @@ using System.Windows.Shapes;
 namespace DateReminder
 {
     /// <summary>
-    /// Interaction logic for LogInWindow.xaml
+    /// Interaction logic for RegisterWindow.xaml
     /// </summary>
-    public partial class LogInWindow : Window
+    public partial class RegisterWindow : Window
     {
-        public LogInWindow()
+        public RegisterWindow()
         {
             InitializeComponent();
         }
-
-        private void SignInButton_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Sign In Click!");
-        }
-
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Register Click!");
-            var registerWindow = new RegisterWindow();
-            registerWindow.ShowDialog();
+            Console.WriteLine("Register Account");
         }
     }
 }

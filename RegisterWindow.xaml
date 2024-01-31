@@ -1,0 +1,28 @@
+﻿<Window x:Class="DateReminder.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DateReminder"
+        mc:Ignorable="d"
+        Title="RegisterWindow" Height="450" Width="400" Topmost="True" Background="#FFF9B84F" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Label Content="Login:" FontFamily="MV Boli" Margin="0,-22,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40"/>
+        <Label Content="Password:" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40" Margin="0,83,0,0"/>
+        <TextBox x:Name="LoginTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,77,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="PasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,182,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        <TextBox x:Name="RepeatPasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,283,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        <Button x:Name="RegisterButton" Content="Register" Margin="89,367,92,0" FontSize="18" FontFamily="MV Boli" VerticalAlignment="Top" Padding="0,0,0,0" VerticalContentAlignment="Top" Background="#FFEC8C00" Click="RegisterButton_Click" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Label Content="Repeat Password:" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="494" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="66" FontSize="40" Margin="0,219,0,0"/>
+
+    </Grid>
+</Window>

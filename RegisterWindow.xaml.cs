@@ -31,7 +31,7 @@ namespace DateReminder
             IncorrectRegisterLabel.Visibility = Visibility.Hidden;
             wrongRegisterCancellationTokenSource = new CancellationTokenSource();
         }
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             if(!ReminderDBContext.IsDisposed)
             {
@@ -41,6 +41,35 @@ namespace DateReminder
             Console.WriteLine("RegisterButton_Click");
             if(IsRegisterLegit())
             {
+                using (var context = new ReminderDBContext())
+                {
+                    User user;
+                    if (context.UserSettings.Count() == 0)
+                    {
+                        user = new User()
+                        {
+                            UserName = LoginTextBox.Text,
+                            Password = PasswordTextBox.Text,
+                            UserSettings = new UserSettings
+                            {
+                                SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                                SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
+                            }
+                        };
+                    }
+                    else
+                    {
+                        user = new User()
+                        {
+                            UserName = LoginTextBox.Text,
+                            Password = PasswordTextBox.Text,
+                            UserSettingsId = context.UserSettings.First().Id,
+                        };
+                    }
+                    await context.AddAsync(user);
+                    await context.SaveChangesAsync();
+                }
+
                 ResetLabels();
                 InfoWindow.ShowAccountCreatedWindow(this);
             }
@@ -66,7 +95,7 @@ namespace DateReminder
             using (var context = new ReminderDBContext())
             {
                 bool usersEmpty = context.Users.Count() == 0;
-                if(!usersEmpty && context.Users.First(p => p.UserName == LoginTextBox.Text) != null)
+                if(!usersEmpty && context.Users.FirstOrDefault(p => p.UserName == LoginTextBox.Text) != null)
                 {
                     Console.WriteLine("An account with this Login already exists in the database");
                     PrintErrorMessage(AccountExistsMessage);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace DateReminder
     public partial class LogInWindow : Window
     {
         private CancellationTokenSource printIncorrectLabelTokenSource;
+
+        private const string KeySensitiveCollation = "SQL_Latin1_General_CP1_CS_AS";
         public LogInWindow()
         {
             InitializeComponent();
@@ -30,7 +33,41 @@ namespace DateReminder
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Sign In Click!");
-            PrintIncorrectLabel();
+            if(IsLoginLegit())
+            {
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+                Close();
+            }
+            else
+            {
+                PrintIncorrectLabel();
+            }
+        }
+
+        private bool IsLoginLegit()
+        {
+            if(!ReminderDBContext.IsDisposed)
+            {
+                return false;
+            }
+            using (var context = new ReminderDBContext())
+            {
+                if(context.Users.Count() == 0)
+                {
+                    return false;
+                }
+
+                Console.WriteLine($"LoginTextBox.Text: {LoginTextBox.Text}");
+
+                foreach(var user in context.Users)
+                {
+                    Console.WriteLine($"user.UserName: {user.UserName}");
+                }
+
+                return context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == LoginTextBox.Text 
+                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == PasswordTextBox.Text) != null;
+            }
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)

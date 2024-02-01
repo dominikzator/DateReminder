@@ -45,6 +45,35 @@ namespace DateReminder
                 optionsBuilder.UseSqlServer(configuration.GetConnectionString("TempDB"));
             }
         }
-        
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker.Entries<BaseModel>().Where(p => p.State == EntityState.Added);
+
+            foreach (var entry in entries)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            var entries = ChangeTracker.Entries<BaseModel>().Where(p => p.State == EntityState.Added);
+
+            foreach (var entry in entries)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                }
+            }
+
+            return base.SaveChanges();
+        }
+
     }
 }

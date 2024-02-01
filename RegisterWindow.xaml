@@ -5,13 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="450" Width="400" Topmost="True" Background="#FFF9B84F" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="RegisterWindow" Height="450" Width="400" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Background="#FFF9B84F">
     <Grid>
         <Label Content="Login:" FontFamily="MV Boli" Margin="0,-22,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40"/>
         <Label Content="Password:" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40" Margin="0,83,0,0"/>
         <TextBox x:Name="LoginTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,77,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         <TextBox x:Name="PasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,182,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
         <TextBox x:Name="RepeatPasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,283,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        <Label x:Name="IncorrectRegisterLabel" Content="Incorrect Login or Password, Please try again" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="46" FontSize="14" Margin="0,325,0,0" Background="#00000000" Foreground="#FFBD0000"/>
+
         <Button x:Name="RegisterButton" Content="Register" Margin="89,367,92,0" FontSize="18" FontFamily="MV Boli" VerticalAlignment="Top" Padding="0,0,0,0" VerticalContentAlignment="Top" Background="#FFEC8C00" Click="RegisterButton_Click" RenderTransformOrigin="0.5,0.5">
             <Button.RenderTransform>
                 <TransformGroup>

@@ -5,10 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Content="Fire Notification" HorizontalAlignment="Center" Margin="0,197,0,0" VerticalAlignment="Top" Height="55" Width="174" Background="DarkOrange" Click="Fire_Notification">
-        </Button>
-
-    </Grid>
+        Title="MainWindow" Height="450" Width="800" Background="#FFF9B84F">
+    <StackPanel Margin="10">
+        <Button Content="New Reminder" Click="NewReminder_Click"/>
+        <TextBox Margin="0 5 0 5" TextChanged="TextBox_TextChanged"/>
+        <ListView x:Name="RemindersListView" SelectionChanged="ContactsListView_SelectionChanged" MaxHeight="450" Margin="0, 5, 0, 0" Background="White">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:ReminderControl Reminder="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
 </Window>

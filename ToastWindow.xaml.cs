@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Media;
+using System.Windows;
 
 namespace DateReminder
 {
@@ -10,9 +11,19 @@ namespace DateReminder
         private static float lifeTimeInSeconds = 10f;
 
         private float timeElapsed;
+
+        private SoundPlayer player;
+
         public ToastWindow()
         {
             InitializeToastWindow();
+            InitializeToastSound();
+        }
+
+        private void InitializeToastSound()
+        {
+            player = new SoundPlayer(Properties.Resources.popSound);
+            player.Load();
         }
         public ToastWindow(string title, string message)
         {
@@ -25,6 +36,12 @@ namespace DateReminder
             HandleLifeTime();
             InitializeTimer();
             ToastsManager.Instance.ToastsOpened++;
+            if(player == null)
+            {
+                InitializeToastSound();
+            }
+            player.Play();
+
             //Console.WriteLine("ToastsManager.Instance.ToastsOpened: " + ToastsManager.Instance.ToastsOpened);
             //Console.WriteLine("ToastsManager.Instance.ToastsClosed: " + ToastsManager.Instance.ToastsClosed);
         }
@@ -64,6 +81,7 @@ namespace DateReminder
             Left = ScreenWidth - this.Width;
             Top = 0;
         }
+        
         protected override void OnClosed(EventArgs e)
         {
             ToastsManager.Instance.RemoveToast(this);

@@ -33,9 +33,10 @@ namespace DateReminder
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Sign In Click!");
-            if(IsLoginLegit())
+            User? loggedUser;
+            if(IsLoginLegit(out loggedUser))
             {
-                var mainWindow = new MainWindow();
+                var mainWindow = new MainWindow(loggedUser);
                 mainWindow.Show();
                 Close();
             }
@@ -45,13 +46,14 @@ namespace DateReminder
             }
         }
 
-        private bool IsLoginLegit()
+        private bool IsLoginLegit(out User? loggedUser)
         {
+            loggedUser = null;
             if(!ReminderDBContext.IsDisposed)
             {
                 return false;
             }
-            using (var context = new ReminderDBContext())
+            using (var context = ReminderDBContext.GetContext())
             {
                 if(context.Users.Count() == 0)
                 {
@@ -64,9 +66,15 @@ namespace DateReminder
                 {
                     Console.WriteLine($"user.UserName: {user.UserName}");
                 }
+                User? foundedUser = context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == LoginTextBox.Text
+                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == PasswordTextBox.Text);
+                if(foundedUser != null)
+                {
+                    loggedUser = foundedUser;
+                    return true;
+                }
 
-                return context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == LoginTextBox.Text 
-                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == PasswordTextBox.Text) != null;
+                return false;
             }
         }
 

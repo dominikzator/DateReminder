@@ -15,6 +15,30 @@ namespace DateReminder.Configurations
             builder.HasIndex(x => x.Id).IsUnique();
 
             builder.HasMany(p => p.Reminders).WithOne(p => p.User).HasForeignKey(p => p.UserId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasData(
+                new User
+                {
+                    Id = 1,
+                    UserName = "heniu123",
+                    Password = "1234",
+                    UserSettingsId = 1,
+                },
+                new User
+                {
+                    Id = 2,
+                    UserName = "stasiu123",
+                    Password = "1234",
+                    UserSettingsId = 1,
+                },
+                new User
+                {
+                    Id = 3,
+                    UserName = "mieciu321",
+                    Password = "4321",
+                    UserSettingsId = 1,
+                }
+            );
         }
     }
 }

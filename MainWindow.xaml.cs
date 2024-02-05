@@ -17,6 +17,8 @@ using System.IO;
 using System.Media;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
+using DateReminder.Configurations;
 
 namespace DateReminder
 {
@@ -25,49 +27,57 @@ namespace DateReminder
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SoundPlayer player;
-
         private ToastsManager toastsManager;
-        public MainWindow()
+        private List<Reminder> reminders;
+
+        private User _activeUser;
+        public MainWindow(User activeUser)
         {
             InitializeComponent();
+            reminders = new List<Reminder>();
             toastsManager = ToastsManager.Instance;
+            _activeUser = activeUser;
+            ReadDatabase();
+        }
 
-            InitializeToastSound();
-
-            using (var context = new ReminderDBContext())
+        private async void ReadDatabase()
+        {
+            using (var context = ReminderDBContext.GetContext())
             {
-                //var testingSettings = new UserSettings
-                //{
-                //    TimeToElapse = default,
-                //    TimeToNotify = default
-                //};
-                //var testingUser = new User
-                //{
-                //    UserName = "Heniu",
-                //    Password = "Heniahaslo987",
-                //    UserSettingsId = 1
-                //};
-                //var testingReminder = new Reminder
-                //{
-                //    Priority = 4,
-                //    TargetDate = DateTime.Now,
-                //    UserId = 4,
-                //};
-                //context.Add(testingReminder);
-                //context.SaveChanges();
+                await Console.Out.WriteLineAsync("context.Reminders.Count(): " + context.Reminders.Count());
+                reminders = await context.Reminders.Where(p => p.User.Id == _activeUser.Id).ToListAsync();
+            }
+
+            if (reminders != null)
+            {
+                RemindersListView.ItemsSource = reminders;
             }
         }
-        private void InitializeToastSound()
-        {
-            player = new SoundPlayer(Properties.Resources.popSound);
-            player.Load();
-        }
+
         private async void Fire_Notification(object sender, RoutedEventArgs e)
         {
             FireManyRandomToastsDifferentInterval();
             //FireTooMuchToastsAtOneTime();
         }
+        private async void NewReminder_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("NewReminder_Click");
+        }
+        private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox searchTextBox = sender as TextBox;
+            IEnumerable<Reminder> filteredReminders;
+            using (var context = ReminderDBContext.GetContext())
+            {
+                filteredReminders = await context.Reminders.Where(c => c.User.Id == _activeUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
+            }
+            RemindersListView.ItemsSource = filteredReminders;
+        }
+        private void ContactsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Console.WriteLine("ContactsListView_SelectionChanged");
+        }
+
         private async Task FireTooMuchToastsAtOneTime()
         {
             for (int i = 0; i < 40; i++)
@@ -92,7 +102,6 @@ namespace DateReminder
             await Task.Delay((int)(delayInSeconds * 1000));
             ToastWindow toast = new ToastWindow(toastTitle, toastDescription);
             ToastsManager.Instance.AddToast(toast);
-            player.Play();
         }
 
     }

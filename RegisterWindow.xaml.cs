@@ -41,7 +41,7 @@ namespace DateReminder
             Console.WriteLine("RegisterButton_Click");
             if(IsRegisterLegit())
             {
-                using (var context = new ReminderDBContext())
+                using (var context = ReminderDBContext.GetContext())
                 {
                     User user;
                     if (context.UserSettings.Count() == 0)
@@ -92,7 +92,7 @@ namespace DateReminder
                 PrintErrorMessage(OneOfTheFieldEmptyMessage);
                 return false;
             }
-            using (var context = new ReminderDBContext())
+            using (var context = ReminderDBContext.GetContext())
             {
                 bool usersEmpty = context.Users.Count() == 0;
                 if(!usersEmpty && context.Users.FirstOrDefault(p => p.UserName == LoginTextBox.Text) != null)

@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace DateReminder
+{
+    /// <summary>
+    /// Interaction logic for ReminderControl.xaml
+    /// </summary>
+    public partial class ReminderControl : UserControl
+    {
+        public Reminder Reminder
+        {
+            get { return (Reminder)GetValue(ReminderProperty); }
+            set { SetValue(ReminderProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Contact.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ReminderProperty =
+            DependencyProperty.Register("Reminder", typeof(Reminder), typeof(ReminderControl), new PropertyMetadata(
+                new Reminder() 
+                { 
+                    Priority = 1, 
+                    Title = "This is Reminder Title",
+                    TargetDate = DateTime.MinValue, 
+                    UserId = 1,
+                    SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
+                    SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                }, SetText));
+
+        private static void SetText(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ReminderControl control = d as ReminderControl;
+
+            if (control != null)
+            {
+                control.TitleText.Text = (e.NewValue as Reminder).Title;
+                control.TargetDateText.Text = (e.NewValue as Reminder).TargetDate.ToShortDateString();
+                control.PriorityText.Text = "Priority: " + (e.NewValue as Reminder).Priority.ToString();
+            }
+        }
+        public ReminderControl()
+        {
+            InitializeComponent();
+        }
+    }
+}

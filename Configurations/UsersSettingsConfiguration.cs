@@ -15,6 +15,15 @@ namespace DateReminder.Configurations
             builder.HasIndex(x => x.Id).IsUnique();
 
             builder.HasMany(x => x.Users).WithOne(p => p.UserSettings).HasForeignKey(x => x.UserSettingsId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasData(
+                new UserSettings
+                {
+                    Id = 1,
+                    SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
+                }
+            );
         }
     }
 }

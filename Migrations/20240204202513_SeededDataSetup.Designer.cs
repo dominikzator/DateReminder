@@ -4,6 +4,7 @@ using DateReminder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DateReminder.Migrations
 {
     [DbContext(typeof(ReminderDBContext))]
-    partial class ReminderDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240204202513_SeededDataSetup")]
+    partial class SeededDataSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +50,8 @@ namespace DateReminder.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -73,61 +76,6 @@ namespace DateReminder.Migrations
                             TargetDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Urodziny Sylwii",
                             UserId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Priority = 4,
-                            SecondsToElapse = 172800,
-                            SecondsToNotify = 864000,
-                            TargetDate = new DateTime(2024, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Pierwszy Dzień Wiosny",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Priority = 4,
-                            SecondsToElapse = 172800,
-                            SecondsToNotify = 864000,
-                            TargetDate = new DateTime(2024, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Wigilia",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Priority = 4,
-                            SecondsToElapse = 172800,
-                            SecondsToNotify = 864000,
-                            TargetDate = new DateTime(2024, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Rocznica Odzyskania Niepodległości",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Priority = 4,
-                            SecondsToElapse = 172800,
-                            SecondsToNotify = 864000,
-                            TargetDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Święto Pracy",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Priority = 4,
-                            SecondsToElapse = 172800,
-                            SecondsToNotify = 864000,
-                            TargetDate = new DateTime(2024, 2, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Światowy Dzień Pizzy",
-                            UserId = 3
                         });
                 });
 
@@ -169,22 +117,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "1234",
                             UserName = "heniu123",
-                            UserSettingsId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "1234",
-                            UserName = "stasiu123",
-                            UserSettingsId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "4321",
-                            UserName = "mieciu321",
                             UserSettingsId = 1
                         });
                 });

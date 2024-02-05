@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 public class Reminder : BaseModel
 {
-    [MaxLength(20)]
     public string Title { get; set; }
     public DateTime TargetDate { get; set; }
     public int Priority { get; set; }

@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ApplicationDefinition Remove="App.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="icons8-success-48.png" />
     <None Remove="icons8-warning-48.png" />
     <None Remove="RingBell.png" />
@@ -35,11 +31,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.23.1" />
     <PackageReference Include="MongoDB.EntityFrameworkCore" Version="7.0.0-preview.1" />
-    <PackageReference Include="Testcontainers.MongoDb" Version="3.7.0" />
     <PackageReference Include="UniTask" Version="2.5.3" />
   </ItemGroup>
 

@@ -9,6 +9,13 @@ namespace DateReminder
     /// </summary>
     public partial class App : Application
     {
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Application a = new Application();
+            a.StartupUri = new Uri("LogInWindow.xaml", System.UriKind.Relative);
+            a.Run();
+        }
     }
 
 }

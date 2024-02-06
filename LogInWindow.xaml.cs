@@ -36,7 +36,7 @@ namespace DateReminder
             User? loggedUser;
             if(IsLoginLegit(out loggedUser))
             {
-                var mainWindow = new MainWindow(loggedUser);
+                var mainWindow = MainWindow.GetMainWindow(loggedUser);
                 mainWindow.Show();
                 Close();
             }

@@ -20,22 +20,24 @@ namespace DateReminder
     public partial class InfoWindow : Window
     {
         private const string AccountCreatedDialog = "Account has been successfully created";
+        private const string ReminderAddedDialog = "A new Reminder has been successfully added";
 
-        private Window parentToClose;
+        private Action? onClose;
 
-        private InfoWindow(string message, Window parentToClose = null)
+        private InfoWindow(string message, Action? onClose = null)
         {
             InitializeComponent();
             MessageLabel.Content = message;
-            this.parentToClose = parentToClose;
+            this.onClose = onClose;
         }
 
-        public static void ShowAccountCreatedWindow(Window parentToClose) => new InfoWindow(AccountCreatedDialog, parentToClose).ShowDialog();
+        public static void ShowAccountCreatedWindow(Action? onClose = null) => new InfoWindow(AccountCreatedDialog, onClose).ShowDialog();
+        public static void ShowReminderAddedWindow(Action? onClose = null) => new InfoWindow(ReminderAddedDialog, onClose).ShowDialog();
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            parentToClose?.Close();
+            onClose?.Invoke();
         }
     }
 }

@@ -71,7 +71,10 @@ namespace DateReminder
                 }
 
                 ResetLabels();
-                InfoWindow.ShowAccountCreatedWindow(this);
+                InfoWindow.ShowAccountCreatedWindow(() =>
+                {
+                    this.Close();
+                });
             }
             //PrintAccountExistsMessage();
             //PrintPasswordsNotTheSameMessage();

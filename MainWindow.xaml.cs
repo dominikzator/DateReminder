@@ -27,25 +27,32 @@ namespace DateReminder
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance { get; set; }
+        public static User ActiveUser { get; private set; }
+
         private ToastsManager toastsManager;
         private List<Reminder> reminders;
 
-        private User _activeUser;
         public MainWindow(User activeUser)
         {
+            Instance = this;
             InitializeComponent();
             reminders = new List<Reminder>();
             toastsManager = ToastsManager.Instance;
-            _activeUser = activeUser;
+            ActiveUser = activeUser;
             ReadDatabase();
         }
 
-        private async void ReadDatabase()
+        public static MainWindow GetMainWindow(User loggedUser)
+        {
+            return Instance != null ? Instance : new MainWindow(loggedUser);
+        }
+
+        public async void ReadDatabase()
         {
             using (var context = ReminderDBContext.GetContext())
             {
-                await Console.Out.WriteLineAsync("context.Reminders.Count(): " + context.Reminders.Count());
-                reminders = await context.Reminders.Where(p => p.User.Id == _activeUser.Id).ToListAsync();
+                reminders = await context.Reminders.Where(p => p.User.Id == ActiveUser.Id).ToListAsync();
             }
 
             if (reminders != null)
@@ -62,6 +69,8 @@ namespace DateReminder
         private async void NewReminder_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("NewReminder_Click");
+
+            new AddReminderWindow(ActiveUser).ShowDialog();
         }
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -69,7 +78,7 @@ namespace DateReminder
             IEnumerable<Reminder> filteredReminders;
             using (var context = ReminderDBContext.GetContext())
             {
-                filteredReminders = await context.Reminders.Where(c => c.User.Id == _activeUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
+                filteredReminders = await context.Reminders.Where(c => c.User.Id == ActiveUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
             }
             RemindersListView.ItemsSource = filteredReminders;
         }

@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Background="#FFF9B84F">
-    <StackPanel Margin="10">
+    <StackPanel Margin="10,10,10,50">
         <Button Content="New Reminder" Click="NewReminder_Click"/>
         <TextBox Margin="0 5 0 5" TextChanged="TextBox_TextChanged"/>
-        <ListView x:Name="RemindersListView" SelectionChanged="ContactsListView_SelectionChanged" MaxHeight="450" Margin="0, 5, 0, 0" Background="White">
+        <ListView x:Name="RemindersListView" SelectionChanged="ContactsListView_SelectionChanged" Background="White">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

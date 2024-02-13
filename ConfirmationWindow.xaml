@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
-        Title="ConfirmationWindow" Height="168" Width="350" Background="#FFF9B84F" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None">
+        Title="ConfirmationWindow" Height="168" Width="350" Background="#FFF9B84F" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
     <Grid>
-        <Button x:Name="YesButton" Content="Yes" Margin="40,95,179,30" Click="YesButton_Click"/>
-        <Button x:Name="NoButton" Content="No" Margin="179,95,40,30" Click="NoButton_Click"/>
+        <Button x:Name="YesButton" Content="Yes" Click="YesButton_Click" Height="27" MinWidth="131" MinHeight="27" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,50,150,0"/>
+        <Button x:Name="NoButton" Content="No" Click="NoButton_Click" MinWidth="131" MinHeight="27" Margin="150,50,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Label x:Name="MessageLabel" Content="Are You sure You want to do something? Are You sure You want to do something?" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Height="32" VerticalContentAlignment="Center" Margin="0,44,0,0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Width="350" Grid.Row="1" MaxHeight="150" MaxWidth="350" FontStretch="Normal"/>
 
     </Grid>

@@ -21,6 +21,7 @@ namespace DateReminder
     {
         private const string AccountCreatedDialog = "Account has been successfully created";
         private const string ReminderAddedDialog = "A new Reminder has been successfully added";
+        private const string ReminderUpdatedDialog = "A Reminder has been successfully updated";
 
         private Action? onClose;
 
@@ -33,6 +34,7 @@ namespace DateReminder
 
         public static void ShowAccountCreatedWindow(Action? onClose = null) => new InfoWindow(AccountCreatedDialog, onClose).ShowDialog();
         public static void ShowReminderAddedWindow(Action? onClose = null) => new InfoWindow(ReminderAddedDialog, onClose).ShowDialog();
+        public static void ShowReminderUpdatedWindow(Action? onClose = null) => new InfoWindow(ReminderUpdatedDialog, onClose).ShowDialog();
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {

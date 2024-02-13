@@ -21,10 +21,11 @@ namespace DateReminder
     {
         private Action? onConfirm, onDecline;
 
-        public ConfirmationWindow(string message, Action? onConfirm = null, Action? onDecline = null)
+        public ConfirmationWindow(string title, string message, Action? onConfirm = null, Action? onDecline = null)
         {
             InitializeComponent();
             MessageLabel.Content = message;
+            Title = title;
             this.onConfirm = onConfirm;
             this.onDecline = onDecline;
         }

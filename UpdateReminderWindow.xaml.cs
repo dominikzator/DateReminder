@@ -18,7 +18,7 @@ namespace DateReminder
     /// <summary>
     /// Interaction logic for AddReminderWindow.xaml
     /// </summary>
-    public partial class AddReminderWindow : Window
+    public partial class UpdateReminderWindow : Window
     {
         private CancellationTokenSource wrongDataCancellationTokenSource;
 
@@ -32,28 +32,40 @@ namespace DateReminder
 
         private const string TargetDatePattern = "\\d{4}\\-(0[1-9]|1[012]|[1-9])\\-(0[1-9]|[12][0-9]|3[01]|[1-9])$";
 
-        public AddReminderWindow()
+        private const string AddReminderText = "Add Reminder";
+        private const string UpdateReminderText = "Update Reminder";
+
+        private Reminder _reminder;
+
+        public UpdateReminderWindow(User user)
         {
-            _activeUser = ReminderDBContext.GetContext().Users.First();
             InitializeComponent();
+            _activeUser = user;
+            UpdateReminderButton.Content = AddReminderText;
             IncorrectDataLabel.Visibility = Visibility.Hidden;
             wrongDataCancellationTokenSource = new CancellationTokenSource();
         }
-        public AddReminderWindow(User user)
+        public UpdateReminderWindow(User user, Reminder reminder)
         {
-            _activeUser = user;
             InitializeComponent();
-            IncorrectDataLabel.Visibility = Visibility.Hidden;
+            _activeUser = user;
+            _reminder = reminder;
             wrongDataCancellationTokenSource = new CancellationTokenSource();
+            UpdateReminderButton.Content = UpdateReminderText;
+            IncorrectDataLabel.Visibility = Visibility.Hidden;
+            TitleTextBox.Text = reminder.Title;
+            TargetDateTextBox.Text = $"{reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}";
+            DaysToElapseTextBox.Text = (reminder.SecondsToElapse / 3600 / 24).ToString();
+            DaysToNotifyTextBox.Text = (reminder.SecondsToNotify / 3600 / 24).ToString();
         }
         private bool AreFieldsEmpty() => TitleTextBox.Text.Length == 0 || TargetDateTextBox.Text.Length == 0 || DaysToElapseTextBox.Text.Length == 0 || DaysToNotifyTextBox.Text.Length == 0;
         private bool IsTitleLegit() => TitleTextBox.Text.ToString().Length <= 30;
         private bool IsDateFormatLegit() => Regex.IsMatch(TargetDateTextBox.Text, TargetDatePattern);
         private bool IsDaysToNotifyLegit() => int.TryParse(DaysToNotifyTextBox.Text, out _);
         private bool IsDaysToElapseLegit() => int.TryParse(DaysToElapseTextBox.Text, out _);
-        private async void AddReminderButton_Click(object sender, RoutedEventArgs e)
+        private async void UpdateReminderButton_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("AddReminderButton_Click");
+            Console.WriteLine("UpdateReminderButton_Click");
             if(AreFieldsEmpty())
             {
                 PrintErrorMessage(FieldsEmpty);
@@ -82,23 +94,43 @@ namespace DateReminder
             using (var context = ReminderDBContext.GetContext())
             {
                 var splittedDate = TargetDateTextBox.Text.Split('-');
-                Reminder reminder = new Reminder
-                {
-                    Title = TitleTextBox.Text,
-                    TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2])),
-                    Priority = 5,
-                    SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
-                    SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24,
-                    UserId = _activeUser.Id
-                };
-                await context.AddAsync(reminder);
-                await context.SaveChangesAsync();
 
-                InfoWindow.ShowReminderAddedWindow(() =>
+
+                if(_reminder == null)
                 {
-                    this.Close();
-                    MainWindow.Instance.ReadDatabase();
-                });
+                    Reminder reminder = new Reminder
+                    {
+                        Title = TitleTextBox.Text,
+                        TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2])),
+                        Priority = 5,
+                        SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
+                        SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24,
+                        UserId = _activeUser.Id
+                    };
+                    await context.AddAsync(reminder);
+                    await context.SaveChangesAsync();
+
+                    InfoWindow.ShowReminderAddedWindow(() =>
+                    {
+                        this.Close();
+                        MainWindow.Instance.ReadDatabase();
+                    });
+                }
+                else
+                {
+                    _reminder.Title = TitleTextBox.Text;
+                    _reminder.TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
+                    _reminder.SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24;
+                    _reminder.SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24;
+                    context.Update(_reminder);
+                    await context.SaveChangesAsync();
+
+                    InfoWindow.ShowReminderUpdatedWindow(() =>
+                    {
+                        this.Close();
+                        MainWindow.Instance.ReadDatabase();
+                    });
+                }
             }
         }
         private async Task PrintErrorMessage(string message)
@@ -156,6 +188,14 @@ namespace DateReminder
         {
             Console.WriteLine("DaysToElapseTextBox_TextChanged");
 
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Return)
+            {
+                UpdateReminderButton_Click(sender, e);
+            }
         }
     }
 }

@@ -70,7 +70,7 @@ namespace DateReminder
         {
             Console.WriteLine("NewReminder_Click");
 
-            new AddReminderWindow(ActiveUser).ShowDialog();
+            new UpdateReminderWindow(ActiveUser).ShowDialog();
         }
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

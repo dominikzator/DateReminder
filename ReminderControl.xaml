@@ -11,5 +11,11 @@
             <TextBlock x:Name="TargetDateText" Text="Data: 21.08.2024" FontSize="15" Foreground="DodgerBlue"/>
             <TextBlock x:Name="PriorityText" Text="Priorytet: " FontSize="15" FontStyle="Italic"/>
         </StackPanel>
+        <Image Height="40" Width="40" Source="/icons8-error-48.png" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" IsHitTestVisible="False" Panel.ZIndex="1"/>
+        <Button x:Name="DeleteButton" Content="" Height="40" HorizontalContentAlignment="Center" Padding="1,1,0,1" HorizontalAlignment="Right" Margin="0,0,5,0" BorderThickness="1,1,1,1" Width="40" Click="DeleteButton_Click"/>
+
+        <Image Height="40" Width="40" Source="/modify_icon.png" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,50,0" IsHitTestVisible="False" Panel.ZIndex="1"/>
+        <Button x:Name="ModifyButton" Content="" Height="40" HorizontalContentAlignment="Center" Padding="1,1,0,1" HorizontalAlignment="Right" Margin="0,0,50,0" BorderThickness="1,1,1,1" Width="40" Click="ModifyButton_Click"/>
+
     </Grid>
 </UserControl>

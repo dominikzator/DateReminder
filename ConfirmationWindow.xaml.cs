@@ -33,12 +33,14 @@ namespace DateReminder
         {
             Console.WriteLine("YesButton_Click");
             onConfirm?.Invoke();
+            Close();
         }
 
         private void NoButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("NoButton_Click");
             onDecline?.Invoke();
+            Close();
         }
     }
 }

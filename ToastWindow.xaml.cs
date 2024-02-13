@@ -34,7 +34,6 @@ namespace DateReminder
         protected override void OnActivated(EventArgs e)
         {
             HandleLifeTime();
-            InitializeTimer();
             ToastsManager.Instance.ToastsOpened++;
             if(player == null)
             {
@@ -48,13 +47,6 @@ namespace DateReminder
         private void InitializeToastWindow()
         {
             InitializeComponent();
-        }
-        private void InitializeTimer()
-        {
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5000);
-            dispatcherTimer.Start();
         }
         private void Tick(object sender, EventArgs e)
         {

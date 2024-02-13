@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#FFF9B84F">
+        Title="MainWindow" Height="450" Width="800" Background="#FFF9B84F" ResizeMode="NoResize" WindowState="Maximized">
     <StackPanel Margin="10,10,10,50">
         <Button Content="New Reminder" Click="NewReminder_Click"/>
         <TextBox Margin="0 5 0 5" TextChanged="TextBox_TextChanged"/>

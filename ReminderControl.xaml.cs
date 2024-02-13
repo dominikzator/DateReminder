@@ -54,5 +54,26 @@ namespace DateReminder
         {
             InitializeComponent();
         }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine($"DeleteButton_Click {Reminder.Title}");
+            ConfirmationWindow deleteWindow =
+            new ConfirmationWindow($"Delete Reminder: {Reminder.Title}?", async () =>
+            {
+                using (var context = ReminderDBContext.GetContext())
+                {
+                    context.Remove(Reminder);
+                    await context.SaveChangesAsync();
+                    MainWindow.Instance.ReadDatabase();
+                }
+            });
+            deleteWindow.ShowDialog();
+        }
+
+        private void ModifyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine($"ModifyButton_Click {Reminder.Title}");
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace DateReminder
             printIncorrectLabelTokenSource = new CancellationTokenSource();
         }
 
-        private void SignInButton_Click(object sender, RoutedEventArgs e)
+        private void SignInButton_Click(object sender, RoutedEventArgs? e = null)
         {
             Console.WriteLine("Sign In Click!");
             User? loggedUser;
@@ -78,7 +78,7 @@ namespace DateReminder
             }
         }
 
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        private void RegisterButton_Click(object sender, RoutedEventArgs? e = null)
         {
             Console.WriteLine("Register Click!");
             var registerWindow = new RegisterWindow();
@@ -92,6 +92,16 @@ namespace DateReminder
             IncorrectLoginLabel.Visibility = Visibility.Visible;
             await Task.Delay(5000, printIncorrectLabelTokenSource.Token);
             IncorrectLoginLabel.Visibility = Visibility.Hidden;
+        }
+
+        private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine($"PasswordTextBox_KeyDown {e.Key}");
+            if (e.Key == Key.Return)
+            {
+                Console.WriteLine("On Return!");
+                SignInButton_Click(sender);
+            }
         }
     }
 }

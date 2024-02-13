@@ -36,6 +36,19 @@ namespace DateReminder
         public ToastsManager()
         {
             MaxToastsOnScreen = (int)(System.Windows.SystemParameters.PrimaryScreenHeight / (ToastWindowHeight + ToastMargin));
+            InitializeTimer();
+        }
+
+        private void InitializeTimer()
+        {
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5000);
+            dispatcherTimer.Start();
+        }
+        private void Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Tick");
         }
 
         public void AddToast(ToastWindow toastWindow)

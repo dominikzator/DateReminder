@@ -9,7 +9,7 @@
     <Grid>
         <Button x:Name="YesButton" Content="Yes" Margin="40,95,179,30" Click="YesButton_Click"/>
         <Button x:Name="NoButton" Content="No" Margin="179,95,40,30" Click="NoButton_Click"/>
-        <Label x:Name="MessageLabel" Content="Are You sure You want to do something?" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Height="32" VerticalContentAlignment="Center" Margin="0,44,0,0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Width="350"/>
+        <Label x:Name="MessageLabel" Content="Are You sure You want to do something? Are You sure You want to do something?" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Height="32" VerticalContentAlignment="Center" Margin="0,44,0,0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Width="350" Grid.Row="1" MaxHeight="150" MaxWidth="350" FontStretch="Normal"/>
 
     </Grid>
 </Window>

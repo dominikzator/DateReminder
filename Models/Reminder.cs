@@ -12,6 +12,8 @@ public class Reminder : BaseModel
     public int Priority { get; set; }
     public int SecondsToNotify { get; set; }
     public int SecondsToElapse { get; set; }
+    public bool IsCyclic { get; set; }
+    public bool Reminded { get; set; }
 
     public User User { get; set; }
     public int UserId { get; set; }

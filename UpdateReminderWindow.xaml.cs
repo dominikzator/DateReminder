@@ -57,6 +57,7 @@ namespace DateReminder
             TargetDateTextBox.Text = $"{reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}";
             DaysToElapseTextBox.Text = (reminder.SecondsToElapse / 3600 / 24).ToString();
             DaysToNotifyTextBox.Text = (reminder.SecondsToNotify / 3600 / 24).ToString();
+            IsCyclicCheckBox.IsChecked = reminder.IsCyclic;
         }
         private bool AreFieldsEmpty() => TitleTextBox.Text.Length == 0 || TargetDateTextBox.Text.Length == 0 || DaysToElapseTextBox.Text.Length == 0 || DaysToNotifyTextBox.Text.Length == 0;
         private bool IsTitleLegit() => TitleTextBox.Text.ToString().Length <= 30;
@@ -105,7 +106,8 @@ namespace DateReminder
                         Priority = 5,
                         SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
                         SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24,
-                        UserId = _activeUser.Id
+                        UserId = _activeUser.Id,
+                        IsCyclic = (bool)IsCyclicCheckBox.IsChecked
                     };
                     await context.AddAsync(reminder);
                     await context.SaveChangesAsync();
@@ -122,6 +124,7 @@ namespace DateReminder
                     _reminder.TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
                     _reminder.SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24;
                     _reminder.SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24;
+                    _reminder.IsCyclic = (bool)IsCyclicCheckBox.IsChecked;
                     context.Update(_reminder);
                     await context.SaveChangesAsync();
 

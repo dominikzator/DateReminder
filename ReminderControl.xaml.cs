@@ -47,7 +47,8 @@ namespace DateReminder
             {
                 control.TitleText.Text = (e.NewValue as Reminder).Title;
                 control.TargetDateText.Text = (e.NewValue as Reminder).TargetDate.ToShortDateString();
-                control.PriorityText.Text = "Priority: " + (e.NewValue as Reminder).Priority.ToString();
+                string additionText = (e.NewValue as Reminder).IsCyclic ? "Yes" : "No";
+                control.IsCyclicText.Text = "Is cyclic: " + additionText;
             }
         }
         public ReminderControl()

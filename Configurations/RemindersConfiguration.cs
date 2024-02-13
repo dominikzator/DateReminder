@@ -25,6 +25,7 @@ namespace DateReminder.Configurations
                     UserId = 1,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
                 },
                 new Reminder
                 {
@@ -35,6 +36,7 @@ namespace DateReminder.Configurations
                     UserId = 1,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
                 },
                 new Reminder
                 {
@@ -45,6 +47,7 @@ namespace DateReminder.Configurations
                     UserId = 1,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
                 },
 
                 new Reminder
@@ -56,6 +59,7 @@ namespace DateReminder.Configurations
                     UserId = 2,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
                 },
                 new Reminder
                 {
@@ -66,6 +70,7 @@ namespace DateReminder.Configurations
                     UserId = 2,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
                 },
 
                 new Reminder
@@ -77,6 +82,18 @@ namespace DateReminder.Configurations
                     UserId = 3,
                     SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = true,
+                },
+                new Reminder
+                {
+                    Id = 7,
+                    Priority = 4,
+                    Title = "Fryzjer",
+                    TargetDate = new DateTime(2024, 2, 28),
+                    UserId = 1,
+                    SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
+                    SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
+                    IsCyclic = false,
                 }
             );
         }

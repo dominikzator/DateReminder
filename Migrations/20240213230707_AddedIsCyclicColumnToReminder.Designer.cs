@@ -4,6 +4,7 @@ using DateReminder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DateReminder.Migrations
 {
     [DbContext(typeof(ReminderDBContext))]
-    partial class ReminderDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240213230707_AddedIsCyclicColumnToReminder")]
+    partial class AddedIsCyclicColumnToReminder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,6 @@ namespace DateReminder.Migrations
 
                     b.Property<int>("Priority")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Reminded")
-                        .HasColumnType("bit");
 
                     b.Property<int>("SecondsToElapse")
                         .HasColumnType("int");
@@ -75,7 +75,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -88,7 +87,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -101,7 +99,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -114,7 +111,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -127,7 +123,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -140,7 +135,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = true,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 2, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -153,7 +147,6 @@ namespace DateReminder.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCyclic = false,
                             Priority = 4,
-                            Reminded = false,
                             SecondsToElapse = 172800,
                             SecondsToNotify = 864000,
                             TargetDate = new DateTime(2024, 2, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),

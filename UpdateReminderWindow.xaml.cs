@@ -28,7 +28,6 @@ namespace DateReminder
         private const string TooLongTitle = "Title can't be longer than 30 characters";
         private const string IncorrectDateFormat= "Target Date format is incorrect. The correct format is YYYY-MM-DD";
         private const string IncorrectDaysToNotifyFormat= "Incorrect format of Days to Notify, Please insert a digit";
-        private const string IncorrectDaysToElapseFormat= "Incorrect format of Days to Elapse, Please insert a digit";
 
         private const string TargetDatePattern = "\\d{4}\\-(0[1-9]|1[012]|[1-9])\\-(0[1-9]|[12][0-9]|3[01]|[1-9])$";
 
@@ -55,15 +54,13 @@ namespace DateReminder
             IncorrectDataLabel.Visibility = Visibility.Hidden;
             TitleTextBox.Text = reminder.Title;
             TargetDateTextBox.Text = $"{reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}";
-            DaysToElapseTextBox.Text = (reminder.SecondsToElapse / 3600 / 24).ToString();
             DaysToNotifyTextBox.Text = (reminder.SecondsToNotify / 3600 / 24).ToString();
             IsCyclicCheckBox.IsChecked = reminder.IsCyclic;
         }
-        private bool AreFieldsEmpty() => TitleTextBox.Text.Length == 0 || TargetDateTextBox.Text.Length == 0 || DaysToElapseTextBox.Text.Length == 0 || DaysToNotifyTextBox.Text.Length == 0;
+        private bool AreFieldsEmpty() => TitleTextBox.Text.Length == 0 || TargetDateTextBox.Text.Length == 0 || DaysToNotifyTextBox.Text.Length == 0;
         private bool IsTitleLegit() => TitleTextBox.Text.ToString().Length <= 30;
         private bool IsDateFormatLegit() => Regex.IsMatch(TargetDateTextBox.Text, TargetDatePattern);
         private bool IsDaysToNotifyLegit() => int.TryParse(DaysToNotifyTextBox.Text, out _);
-        private bool IsDaysToElapseLegit() => int.TryParse(DaysToElapseTextBox.Text, out _);
         private async void UpdateReminderButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("UpdateReminderButton_Click");
@@ -87,11 +84,6 @@ namespace DateReminder
                 PrintErrorMessage(IncorrectDaysToNotifyFormat);
                 return;
             }
-            if (!IsDaysToElapseLegit())
-            {
-                PrintErrorMessage(IncorrectDaysToElapseFormat);
-                return;
-            }
             using (var context = ReminderDBContext.GetContext())
             {
                 var splittedDate = TargetDateTextBox.Text.Split('-');
@@ -105,7 +97,6 @@ namespace DateReminder
                         TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2])),
                         Priority = 5,
                         SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
-                        SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24,
                         UserId = _activeUser.Id,
                         IsCyclic = (bool)IsCyclicCheckBox.IsChecked
                     };
@@ -123,7 +114,6 @@ namespace DateReminder
                     _reminder.Title = TitleTextBox.Text;
                     _reminder.TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
                     _reminder.SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24;
-                    _reminder.SecondsToElapse = int.Parse(DaysToElapseTextBox.Text) * 3600 * 24;
                     _reminder.IsCyclic = (bool)IsCyclicCheckBox.IsChecked;
                     context.Update(_reminder);
                     await context.SaveChangesAsync();

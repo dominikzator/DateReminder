@@ -35,7 +35,6 @@ namespace DateReminder
                     Title = "This is Reminder Title",
                     TargetDate = DateTime.MinValue, 
                     UserId = 1,
-                    SecondsToElapse = UserSettings.GetDefaultSecondsToElapse(),
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
                 }, SetText));
 

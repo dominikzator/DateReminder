@@ -14,6 +14,8 @@ namespace DateReminder
 
         private SoundPlayer player;
 
+        public Reminder Reminder { get; set; }
+
         public ToastWindow()
         {
             InitializeToastWindow();
@@ -25,11 +27,12 @@ namespace DateReminder
             player = new SoundPlayer(Properties.Resources.popSound);
             player.Load();
         }
-        public ToastWindow(string title, string message)
+        public ToastWindow(Reminder reminder, string title, string message)
         {
             InitializeToastWindow();
             ToastTitle.Content = title;
             ToastDescription.Content = message;
+            Reminder = reminder;
         }
         protected override void OnActivated(EventArgs e)
         {

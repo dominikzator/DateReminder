@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,8 @@ namespace DateReminder
         public List<ToastWindow> Toasts = new List<ToastWindow>();
         public List<ToastWindow> PendingToasts = new List<ToastWindow>();
 
+        public Dictionary<int, bool> ToastsIdsAlreadyShown = new Dictionary<int, bool>();
+
         public ToastsManager()
         {
             MaxToastsOnScreen = (int)(System.Windows.SystemParameters.PrimaryScreenHeight / (ToastWindowHeight + ToastMargin));
@@ -49,10 +52,32 @@ namespace DateReminder
         private void Tick(object sender, EventArgs e)
         {
             Console.WriteLine("Tick");
+            Console.WriteLine("DateTime.Now: " + DateTime.Now);
+            using (var context = new ReminderDBContext())
+            {
+                foreach (var reminder in context.Reminders.Where(p => p.UserId == MainWindow.ActiveUser.Id))
+                {
+                    if(DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
+                    {
+                        int daysToEvent = reminder.TargetDate.Subtract(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
+                        Console.WriteLine("MATCHING reminder.Title: " + reminder.Title);
+                        OpenToast(reminder, $"Upcoming event in {daysToEvent} days: {reminder.Title}", $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
+                    }
+                }
+            }
+        }
+        private async Task OpenToast(Reminder reminder, string toastTitle, string toastDescription)
+        {
+            ToastWindow toast = new ToastWindow(reminder, toastTitle, toastDescription);
+            ToastsManager.Instance.AddToast(toast);
         }
 
         public void AddToast(ToastWindow toastWindow)
         {
+            if(ToastsIdsAlreadyShown.ContainsKey(toastWindow.Reminder.Id) && ToastsIdsAlreadyShown[toastWindow.Reminder.Id])
+            {
+                return;
+            }
             if(Toasts.Count >= MaxToastsOnScreen)
             {
                 PendingToasts.Add(toastWindow);
@@ -61,6 +86,7 @@ namespace DateReminder
             Toasts.Add(toastWindow);
             toastWindow.Show();
             PositionToast(toastWindow);
+            ToastsIdsAlreadyShown.Add(toastWindow.Reminder.Id, true);
         }
         public void RemoveToast(ToastWindow toastWindow)
         {

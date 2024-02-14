@@ -60,12 +60,6 @@ namespace DateReminder
                 RemindersListView.ItemsSource = reminders;
             }
         }
-
-        private async void Fire_Notification(object sender, RoutedEventArgs e)
-        {
-            FireManyRandomToastsDifferentInterval();
-            //FireTooMuchToastsAtOneTime();
-        }
         private async void NewReminder_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("NewReminder_Click");
@@ -86,32 +80,5 @@ namespace DateReminder
         {
             Console.WriteLine("ContactsListView_SelectionChanged");
         }
-
-        private async Task FireTooMuchToastsAtOneTime()
-        {
-            for (int i = 0; i < 40; i++)
-            {
-                OpenToastWithDelay(3f, $"Title {i}", $"Description {i}");
-            }
-        }
-        private async Task FireManyRandomToastsDifferentInterval()
-        {
-            int numberOfToasts = 15;
-
-            for (int i = 0; i < numberOfToasts; i++)
-            {
-                var random = new Random();
-                int randomInterval = random.Next(0, 5);
-                OpenToastWithDelay(randomInterval, $"Title {i}", $"Description {i}");
-            }
-        }
-
-        private async Task OpenToastWithDelay(double delayInSeconds, string toastTitle, string toastDescription)
-        {
-            await Task.Delay((int)(delayInSeconds * 1000));
-            ToastWindow toast = new ToastWindow(toastTitle, toastDescription);
-            ToastsManager.Instance.AddToast(toast);
-        }
-
     }
 }

@@ -11,7 +11,6 @@ public class Reminder : BaseModel
     public DateTime TargetDate { get; set; }
     public int Priority { get; set; }
     public int SecondsToNotify { get; set; }
-    public int SecondsToElapse { get; set; }
     public bool IsCyclic { get; set; }
     public bool Reminded { get; set; }
 

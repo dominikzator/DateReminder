@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,7 +35,10 @@ namespace DateReminder
             return base.DisposeAsync();
         }
 
-        public static ReminderDBContext GetContext() => new ReminderDBContext();
+        public static ReminderDBContext GetContext()
+        {
+            return new ReminderDBContext();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,11 +50,11 @@ namespace DateReminder
             if (!optionsBuilder.IsConfigured)
             {
                 // add IConfigurationRoot  to get connection string 
-                IConfigurationRoot configuration = new ConfigurationBuilder()
+                IConfigurationRoot Configuration = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("TempDB"));
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("TempDB"));
             }
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

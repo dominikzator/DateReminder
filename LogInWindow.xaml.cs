@@ -1,7 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EncryptionDecryptionUsingSymmetricKey;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,20 +27,100 @@ namespace DateReminder
     {
         private CancellationTokenSource printIncorrectLabelTokenSource;
 
+        private SecureString securePwd = new SecureString();
+        private ConsoleKeyInfo key;
+
         private const string KeySensitiveCollation = "SQL_Latin1_General_CP1_CS_AS";
+
+        private static string PasswordKey;
+
         public LogInWindow()
         {
             InitializeComponent();
             IncorrectLoginLabel.Visibility = Visibility.Hidden;
             printIncorrectLabelTokenSource = new CancellationTokenSource();
+
+            IConfigurationRoot Configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+            PasswordKey = Configuration.GetConnectionString("PasswordKey");
+
+            try
+            {
+                using (StreamReader sr = File.OpenText("TempUser.txt"))
+                {
+                    string s = "";
+                    int lineIndex = 0;
+                    string login = "";
+                    string decryptedPassword = "";
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(s);
+                        if (lineIndex == 0)
+                        {
+                            login = s;
+                        }
+                        else if (lineIndex == 1)
+                        {
+                            try
+                            {
+                                using(var context = new ReminderDBContext())
+                                {
+                                    Console.WriteLine("ReminderDBContext.PasswordKey: " + PasswordKey);
+                                    decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
+                                }
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Can't decrypt a password, opening LogInWindow");
+                                return;
+                            }
+                            Console.WriteLine(decryptedPassword);
+                        }
+                        lineIndex++;
+                    }
+                    User loggedUser;
+                    if (TryGetUser(login, decryptedPassword, out loggedUser))
+                    {
+                        var mainWindow = MainWindow.GetMainWindow(loggedUser);
+                        mainWindow.Show();
+                        Close();
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
+            }
+        }
+
+        private async void TryCacheData(string login, string password)
+        {
+            if ((bool)RememberMeCheckBox.IsChecked)
+            {
+                using (StreamWriter sw = File.CreateText("TempUser.txt"))
+                {
+                    for (int i = 0; i < password.Length; i++)
+                    {
+                        securePwd.AppendChar(password[i]);
+                    }
+
+                    var encryptedString = StringCipher.EncryptString(PasswordKey, password);
+
+                    sw.WriteLine(login);
+                    sw.WriteLine(encryptedString);
+                }
+            }
         }
 
         private void SignInButton_Click(object sender, RoutedEventArgs? e = null)
         {
             Console.WriteLine("Sign In Click!");
             User? loggedUser;
-            if(IsLoginLegit(out loggedUser))
+            if (TryGetUser(LoginTextBox.Text, PasswordTextBox.Text, out loggedUser))
             {
+                TryCacheData(loggedUser.UserName, loggedUser.Password);
                 var mainWindow = MainWindow.GetMainWindow(loggedUser);
                 mainWindow.Show();
                 Close();
@@ -46,7 +131,7 @@ namespace DateReminder
             }
         }
 
-        private bool IsLoginLegit(out User? loggedUser)
+        private bool TryGetUser(string login, string password, out User? loggedUser)
         {
             loggedUser = null;
             if(!ReminderDBContext.IsDisposed)
@@ -64,10 +149,10 @@ namespace DateReminder
 
                 foreach(var user in context.Users)
                 {
-                    Console.WriteLine($"user.UserName: {user.UserName}");
+                    Console.WriteLine($"user.UserName: {login}");
                 }
-                User? foundedUser = context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == LoginTextBox.Text
-                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == PasswordTextBox.Text);
+                User? foundedUser = context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == login
+                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == password);
                 if(foundedUser != null)
                 {
                     loggedUser = foundedUser;

@@ -60,7 +60,8 @@ namespace DateReminder
                     if(DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
                     {
                         int daysToEvent = reminder.TargetDate.Subtract(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
-                        string titleMessage = (daysToEvent == 0) ? $"Today is: {reminder.Title}" : $"Upcoming event in {daysToEvent} days: {reminder.Title}";
+                        string dayString = daysToEvent == 1 ? "day" : "days";
+                        string titleMessage = (daysToEvent == 0) ? $"Today is: {reminder.Title}" : $"Upcoming event in {daysToEvent} {dayString}: {reminder.Title}";
                         Console.WriteLine("MATCHING reminder.Title: " + reminder.Title);
                         OpenToast(reminder, titleMessage, $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
                     }

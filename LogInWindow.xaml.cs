@@ -56,7 +56,6 @@ namespace DateReminder
                     string decryptedPassword = "";
                     while ((s = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine(s);
                         if (lineIndex == 0)
                         {
                             login = s;
@@ -67,16 +66,13 @@ namespace DateReminder
                             {
                                 using(var context = new ReminderDBContext())
                                 {
-                                    Console.WriteLine("ReminderDBContext.PasswordKey: " + PasswordKey);
                                     decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
                                 }
                             }
                             catch
                             {
-                                Console.WriteLine("Can't decrypt a password, opening LogInWindow");
                                 return;
                             }
-                            Console.WriteLine(decryptedPassword);
                         }
                         lineIndex++;
                     }
@@ -116,7 +112,6 @@ namespace DateReminder
 
         private void SignInButton_Click(object sender, RoutedEventArgs? e = null)
         {
-            Console.WriteLine("Sign In Click!");
             User? loggedUser;
             if (TryGetUser(LoginTextBox.Text, PasswordTextBox.Text, out loggedUser))
             {
@@ -145,12 +140,6 @@ namespace DateReminder
                     return false;
                 }
 
-                Console.WriteLine($"LoginTextBox.Text: {LoginTextBox.Text}");
-
-                foreach(var user in context.Users)
-                {
-                    Console.WriteLine($"user.UserName: {login}");
-                }
                 User? foundedUser = context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == login
                 && EF.Functions.Collate(p.Password, KeySensitiveCollation) == password);
                 if(foundedUser != null)
@@ -165,7 +154,6 @@ namespace DateReminder
 
         private void RegisterButton_Click(object sender, RoutedEventArgs? e = null)
         {
-            Console.WriteLine("Register Click!");
             var registerWindow = new RegisterWindow();
             registerWindow.ShowDialog();
         }
@@ -181,10 +169,8 @@ namespace DateReminder
 
         private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Console.WriteLine($"PasswordTextBox_KeyDown {e.Key}");
             if (e.Key == Key.Return)
             {
-                Console.WriteLine("On Return!");
                 SignInButton_Click(sender);
             }
         }

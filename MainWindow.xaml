@@ -6,21 +6,46 @@
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Background="#FFF9B84F" ResizeMode="NoResize" WindowState="Maximized">
-    <StackPanel Margin="10,10,10,50">
-        <Button Content="New Reminder" Click="NewReminder_Click"/>
-        <TextBox Margin="0 5 0 5" TextChanged="TextBox_TextChanged"/>
-        <ListView x:Name="RemindersListView" SelectionChanged="ContactsListView_SelectionChanged" Background="White">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:ReminderControl Reminder="{Binding}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackPanel>
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="76.5" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Border x:Name="MainBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+            <StackPanel x:Name="StackPanel" Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Button x:Name="NewReminderButton" Content="New Reminder" Click="NewReminder_Click"/>
+                <TextBox x:Name="SearchTextBox" Margin="0 5 0 5" TextChanged="TextBox_TextChanged"/>
+                <Border x:Name="RemindersListArea">
+                    <ListView x:Name="RemindersListView" Background="White">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <local:ReminderControl Reminder="{Binding}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+
+            </StackPanel>
+        </Border>
+        <Border x:Name="BottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Background="#FFFFE25A">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label x:Name="PageLabel" Content="Page 1" VerticalAlignment="Center" FontSize="32" FontFamily="MV Boli" Width="200" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Padding="0,0,10,0"/>
+
+                <Button x:Name="PreviousPageButton" Width="50" Click="PreviousPageButton_Click">
+                    <Image Source="/previous2.png" HorizontalAlignment="Center" VerticalAlignment="Center" Height="70" Width="58" ></Image>
+                </Button>
+                <Button x:Name="NextPageButton" Width="50" Click="NextPageButton_Click">
+                    <Image Source="/next.png" HorizontalAlignment="Center" VerticalAlignment="Center" Height="70" Width="58" ></Image>
+                </Button>
+            </StackPanel>
+        </Border>
+
+    </Grid>
 </Window>

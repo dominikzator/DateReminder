@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
 using DateReminder.Configurations;
+using Org.BouncyCastle.Crypto;
 
 namespace DateReminder
 {
@@ -32,6 +33,10 @@ namespace DateReminder
 
         private ToastsManager toastsManager;
         private List<Reminder> reminders;
+
+        private int maxRemindersInContainer;
+        private int maxPagesIndex;
+        private int pageIndex = 0;
 
         public MainWindow(User activeUser)
         {
@@ -50,20 +55,27 @@ namespace DateReminder
 
         public async void ReadDatabase()
         {
+            await Task.Delay(200);
+            maxRemindersInContainer = (int)((MainBorder.ActualHeight - (SearchTextBox.ActualHeight + NewReminderButton.ActualHeight + 30))/ (76.5f)) - 1;
+
             using (var context = ReminderDBContext.GetContext())
             {
-                reminders = await context.Reminders.Where(p => p.User.Id == ActiveUser.Id).ToListAsync();
+                maxPagesIndex = (int)Math.Ceiling((double)context.Reminders.Where(p => p.User.Id == ActiveUser.Id).Count() / maxRemindersInContainer) - 1;
+                if(pageIndex > maxPagesIndex)
+                {
+                    pageIndex = maxPagesIndex;
+                }
+                reminders = await context.Reminders.Where(p => p.User.Id == ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
             }
 
             if (reminders != null)
             {
                 RemindersListView.ItemsSource = reminders;
             }
+            UpdatePageText();
         }
         private async void NewReminder_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("NewReminder_Click");
-
             new UpdateReminderWindow(ActiveUser).ShowDialog();
         }
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -76,9 +88,33 @@ namespace DateReminder
             }
             RemindersListView.ItemsSource = filteredReminders;
         }
-        private void ContactsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void PreviousPageButton_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("ContactsListView_SelectionChanged");
+            if (--pageIndex < 0)
+            {
+                pageIndex = 0;
+            }
+            else
+            {
+                ReadDatabase();
+            }
+        }
+
+        private void NextPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (++pageIndex > maxPagesIndex)
+            {
+                pageIndex = maxPagesIndex;
+            }
+            else
+            {
+                ReadDatabase();
+            }
+        }
+        private void UpdatePageText()
+        {
+            PageLabel.Content = $"Page {pageIndex + 1}";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EncryptionDecryptionUsingSymmetricKey;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -34,6 +35,9 @@ namespace DateReminder
 
         private static string PasswordKey;
 
+        private int attempts;
+        private int maxAttempts = 3;
+
         public LogInWindow()
         {
             InitializeComponent();
@@ -46,6 +50,11 @@ namespace DateReminder
                 .Build();
             PasswordKey = Configuration.GetConnectionString("PasswordKey");
 
+            TryReadFromTempFile();
+        }
+
+        private void TryReadFromTempFile()
+        {
             try
             {
                 using (StreamReader sr = File.OpenText("TempUser.txt"))
@@ -64,7 +73,7 @@ namespace DateReminder
                         {
                             try
                             {
-                                using(var context = new ReminderDBContext())
+                                using (var context = new ReminderDBContext())
                                 {
                                     decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
                                 }
@@ -85,10 +94,23 @@ namespace DateReminder
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
+                if(ex is IOException)
+                {
+                    Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
+                }
+                else if (ex is SqlException)
+                {
+                    Console.WriteLine("Couldn't login to database...");
+                    if(++attempts < maxAttempts)
+                    {
+                        TryReadFromTempFile();
+                        return;
+                    }
+                }
             }
+            Console.WriteLine("After 3 Attempts");
         }
 
         private async void TryCacheData(string login, string password)

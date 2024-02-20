@@ -38,18 +38,21 @@ namespace DateReminder
         private int maxPagesIndex;
         private int pageIndex = 0;
 
+        public static bool IsActive { get; set; }
+
         public MainWindow()
         {
             Instance = this;
             InitializeComponent();
             reminders = new List<Reminder>();
+            IsActive = true;
 
             ReadDatabase();
         }
         public async void ReadDatabase()
         {
             await Task.Delay(200);
-            maxRemindersInContainer = (int)((MainBorder.ActualHeight - (SearchTextBox.ActualHeight + NewReminderButton.ActualHeight + 30))/ (76.5f)) - 1;
+            maxRemindersInContainer = (int)((MainBorder.ActualHeight - (SearchTextBox.ActualHeight + NewReminderButton.ActualHeight + 30))/ (96.45f)) - 1;
 
             using (var context = ReminderDBContext.GetContext())
             {
@@ -85,6 +88,12 @@ namespace DateReminder
                 filteredReminders = await context.Reminders.Where(c => c.User.Id == CoreWindow.Instance.ActiveUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
             }
             RemindersListView.ItemsSource = filteredReminders;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            IsActive = false;
+            base.OnClosed(e);
         }
 
         private void PreviousPageButton_Click(object sender, RoutedEventArgs e)

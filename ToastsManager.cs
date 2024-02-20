@@ -53,13 +53,32 @@ namespace DateReminder
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5000);
             dispatcherTimer.Start();
         }
-        private void Tick(object sender, EventArgs e)
+        private async void Tick(object sender, EventArgs e)
         {
             Console.WriteLine("Tick");
             Console.WriteLine("DateTime.Now: " + DateTime.Now);
             using (var context = new ReminderDBContext())
             {
+                //Try rescedule cyclic reminders to the year
                 foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id))
+                {
+                    if (reminder.TargetDate.Year <= DateTime.Now.Year && reminder.TargetDate.Month <= DateTime.Now.Month && reminder.TargetDate.Day < DateTime.Now.Day)
+                    {
+                        if(reminder.IsCyclic)
+                        {
+                            Console.WriteLine($"Reminder, title: {reminder.Title}, targetdate: {reminder.TargetDate.ToShortDateString()}, IsCyclic: {reminder.IsCyclic}, Reminded: {reminder.Reminded}");
+                            reminder.TargetDate = new DateTime(reminder.TargetDate.Year + 1, reminder.TargetDate.Month, reminder.TargetDate.Day);
+                            reminder.Reminded = false;
+                        }
+                    }
+                }
+                await context.SaveChangesAsync();
+                if(MainWindow.IsActive)
+                {
+                    SingletonWindow<MainWindow>.Instance.WindowInstance.ReadDatabase();
+                }
+                //Fire corresponding Reminders Notifications
+                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && !p.Reminded))
                 {
                     if(DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
                     {

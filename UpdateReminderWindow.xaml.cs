@@ -22,8 +22,6 @@ namespace DateReminder
     {
         private CancellationTokenSource wrongDataCancellationTokenSource;
 
-        private User _activeUser;
-
         private const string FieldsEmpty = "One of the fields are empty";
         private const string TooLongTitle = "Title can't be longer than 30 characters";
         private const string IncorrectDateFormat= "Target Date format is incorrect. The correct format is YYYY-MM-DD";
@@ -36,18 +34,16 @@ namespace DateReminder
 
         private Reminder _reminder;
 
-        public UpdateReminderWindow(User user)
+        public UpdateReminderWindow()
         {
             InitializeComponent();
-            _activeUser = user;
             UpdateReminderButton.Content = AddReminderText;
             IncorrectDataLabel.Visibility = Visibility.Hidden;
             wrongDataCancellationTokenSource = new CancellationTokenSource();
         }
-        public UpdateReminderWindow(User user, Reminder reminder)
+        public UpdateReminderWindow(Reminder reminder)
         {
             InitializeComponent();
-            _activeUser = user;
             _reminder = reminder;
             wrongDataCancellationTokenSource = new CancellationTokenSource();
             UpdateReminderButton.Content = UpdateReminderText;
@@ -97,7 +93,7 @@ namespace DateReminder
                         TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2])),
                         Priority = 5,
                         SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
-                        UserId = _activeUser.Id,
+                        UserId = CoreWindow.Instance.ActiveUser.Id,
                         IsCyclic = (bool)IsCyclicCheckBox.IsChecked
                     };
                     await context.AddAsync(reminder);

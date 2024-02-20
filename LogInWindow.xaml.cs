@@ -1,4 +1,5 @@
 ﻿using EncryptionDecryptionUsingSymmetricKey;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,149 +29,29 @@ namespace DateReminder
     {
         private CancellationTokenSource printIncorrectLabelTokenSource;
 
-        private SecureString securePwd = new SecureString();
-        private ConsoleKeyInfo key;
-
-        private const string KeySensitiveCollation = "SQL_Latin1_General_CP1_CS_AS";
-
-        private static string PasswordKey;
-
-        private int attempts;
-        private int maxAttempts = 3;
-
         public LogInWindow()
         {
             InitializeComponent();
+
             IncorrectLoginLabel.Visibility = Visibility.Hidden;
             printIncorrectLabelTokenSource = new CancellationTokenSource();
-
-            IConfigurationRoot Configuration = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json")
-                .Build();
-            PasswordKey = Configuration.GetConnectionString("PasswordKey");
-
-            TryReadFromTempFile();
-        }
-
-        private void TryReadFromTempFile()
-        {
-            try
-            {
-                using (StreamReader sr = File.OpenText("TempUser.txt"))
-                {
-                    string s = "";
-                    int lineIndex = 0;
-                    string login = "";
-                    string decryptedPassword = "";
-                    while ((s = sr.ReadLine()) != null)
-                    {
-                        if (lineIndex == 0)
-                        {
-                            login = s;
-                        }
-                        else if (lineIndex == 1)
-                        {
-                            try
-                            {
-                                using (var context = new ReminderDBContext())
-                                {
-                                    decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
-                                }
-                            }
-                            catch
-                            {
-                                return;
-                            }
-                        }
-                        lineIndex++;
-                    }
-                    User loggedUser;
-                    if (TryGetUser(login, decryptedPassword, out loggedUser))
-                    {
-                        var mainWindow = MainWindow.GetMainWindow(loggedUser);
-                        mainWindow.Show();
-                        Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if(ex is IOException)
-                {
-                    Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
-                }
-                else if (ex is SqlException)
-                {
-                    Console.WriteLine("Couldn't login to database...");
-                    if(++attempts < maxAttempts)
-                    {
-                        TryReadFromTempFile();
-                        return;
-                    }
-                }
-            }
-            Console.WriteLine("After 3 Attempts");
-        }
-
-        private async void TryCacheData(string login, string password)
-        {
-            if ((bool)RememberMeCheckBox.IsChecked)
-            {
-                using (StreamWriter sw = File.CreateText("TempUser.txt"))
-                {
-                    for (int i = 0; i < password.Length; i++)
-                    {
-                        securePwd.AppendChar(password[i]);
-                    }
-
-                    var encryptedString = StringCipher.EncryptString(PasswordKey, password);
-
-                    sw.WriteLine(login);
-                    sw.WriteLine(encryptedString);
-                }
-            }
         }
 
         private void SignInButton_Click(object sender, RoutedEventArgs? e = null)
         {
             User? loggedUser;
-            if (TryGetUser(LoginTextBox.Text, PasswordTextBox.Text, out loggedUser))
+            if (CoreWindow.Instance.TryGetUser(LoginTextBox.Text, PasswordTextBox.Text, out loggedUser))
             {
-                TryCacheData(loggedUser.UserName, loggedUser.Password);
-                var mainWindow = MainWindow.GetMainWindow(loggedUser);
-                mainWindow.Show();
+                if ((bool)RememberMeCheckBox.IsChecked)
+                {
+                    CoreWindow.Instance.TryCacheData(loggedUser.UserName, loggedUser.Password);
+                }
+                SingletonWindow<MainWindow>.Instance.WindowInstance.Show();
                 Close();
             }
             else
             {
                 PrintIncorrectLabel();
-            }
-        }
-
-        private bool TryGetUser(string login, string password, out User? loggedUser)
-        {
-            loggedUser = null;
-            if(!ReminderDBContext.IsDisposed)
-            {
-                return false;
-            }
-            using (var context = ReminderDBContext.GetContext())
-            {
-                if(context.Users.Count() == 0)
-                {
-                    return false;
-                }
-
-                User? foundedUser = context.Users.FirstOrDefault(p => EF.Functions.Collate(p.UserName, KeySensitiveCollation) == login
-                && EF.Functions.Collate(p.Password, KeySensitiveCollation) == password);
-                if(foundedUser != null)
-                {
-                    loggedUser = foundedUser;
-                    return true;
-                }
-
-                return false;
             }
         }
 

@@ -13,7 +13,7 @@ namespace DateReminder
         static void Main(string[] args)
         {
             Application a = new Application();
-            a.StartupUri = new Uri("LogInWindow.xaml", System.UriKind.Relative);
+            a.StartupUri = new Uri("CoreWindow.xaml", System.UriKind.Relative);
             a.Run();
         }
     }

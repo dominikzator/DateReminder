@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DateReminder
 {
@@ -36,6 +38,8 @@ namespace DateReminder
 
         public Dictionary<int, bool> ToastsIdsAlreadyShown = new Dictionary<int, bool>();
 
+        public static bool trayInitialized;
+
         public ToastsManager()
         {
             MaxToastsOnScreen = (int)(System.Windows.SystemParameters.PrimaryScreenHeight / (ToastWindowHeight + ToastMargin));
@@ -55,7 +59,7 @@ namespace DateReminder
             Console.WriteLine("DateTime.Now: " + DateTime.Now);
             using (var context = new ReminderDBContext())
             {
-                foreach (var reminder in context.Reminders.Where(p => p.UserId == MainWindow.ActiveUser.Id))
+                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id))
                 {
                     if(DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
                     {

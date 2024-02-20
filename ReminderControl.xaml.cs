@@ -74,7 +74,7 @@ namespace DateReminder
         private void ModifyButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine($"ModifyButton_Click {Reminder.Title}");
-            new UpdateReminderWindow(MainWindow.ActiveUser, Reminder).ShowDialog();
+            new UpdateReminderWindow(Reminder).ShowDialog();
         }
     }
 }

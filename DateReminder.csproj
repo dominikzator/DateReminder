@@ -13,22 +13,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="bell-icon_34488.png" />
+    <None Remove="cancel_icon_png.png" />
     <None Remove="icons8-error-48.png" />
     <None Remove="icons8-next-100.png" />
     <None Remove="icons8-next-96.png" />
     <None Remove="icons8-right-button-100.png" />
     <None Remove="icons8-success-48.png" />
     <None Remove="icons8-warning-48.png" />
+    <None Remove="Icons\BellIcon.ico" />
     <None Remove="modify_icon.png" />
     <None Remove="next.png" />
     <None Remove="previous.png" />
     <None Remove="previous2.png" />
+    <None Remove="Resources\BellIcon" />
+    <None Remove="Resources\cancel_icon-icons.com_52401.ico" />
     <None Remove="RingBell.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Analytics" Version="3.8.1" />
     <PackageReference Include="Autofac" Version="8.0.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -57,16 +63,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="bell-icon_34488.png" />
+    <Resource Include="cancel_icon_png.png" />
     <Resource Include="icons8-error-48.png" />
     <Resource Include="icons8-next-100.png" />
     <Resource Include="icons8-next-96.png" />
     <Resource Include="icons8-right-button-100.png" />
     <Resource Include="icons8-success-48.png" />
     <Resource Include="icons8-warning-48.png" />
+    <Resource Include="Icons\BellIcon.ico" />
     <Resource Include="modify_icon.png" />
     <Resource Include="next.png" />
     <Resource Include="previous.png" />
     <Resource Include="previous2.png" />
+    <Resource Include="Resources\BellIcon" />
+    <Resource Include="Resources\cancel_icon-icons.com_52401.ico" />
     <Resource Include="RingBell.png" />
   </ItemGroup>
 
@@ -81,12 +92,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resource1.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

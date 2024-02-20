@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DateReminder.Properties {
+namespace DateReminder {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace DateReminder.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    public class Resource1 {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resource1() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace DateReminder.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DateReminder.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DateReminder.Resource1", typeof(Resource1).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -71,80 +71,42 @@ namespace DateReminder.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static byte[] icons8_error_48 {
+        public static System.Drawing.Icon cancel_icon {
             get {
-                object obj = ResourceManager.GetObject("icons8-error-48", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("cancel_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static byte[] icons8_info_48 {
+        public static System.Drawing.Icon cancel_icon_icons_com_52401 {
             get {
-                object obj = ResourceManager.GetObject("icons8-info-48", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("cancel_icon_icons_com_52401", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static byte[] icons8_success_48 {
+        public static System.Drawing.Bitmap cancel_icon_png {
             get {
-                object obj = ResourceManager.GetObject("icons8-success-48", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("cancel_icon_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static byte[] icons8_warning_48 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-warning-48", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] modify_icon {
-            get {
-                object obj = ResourceManager.GetObject("modify_icon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        public static System.IO.UnmanagedMemoryStream notifySound {
-            get {
-                return ResourceManager.GetStream("notifySound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        public static System.IO.UnmanagedMemoryStream popSound {
-            get {
-                return ResourceManager.GetStream("popSound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] RingBell {
+        public static System.Drawing.Bitmap RingBell {
             get {
                 object obj = ResourceManager.GetObject("RingBell", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

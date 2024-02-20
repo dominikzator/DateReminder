@@ -20,6 +20,8 @@ using Autofac;
 using Microsoft.EntityFrameworkCore;
 using DateReminder.Configurations;
 using Org.BouncyCastle.Crypto;
+using System.ComponentModel;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace DateReminder
 {
@@ -28,31 +30,22 @@ namespace DateReminder
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow Instance { get; set; }
-        public static User ActiveUser { get; private set; }
+        public static MainWindow? Instance { get; set; }
 
-        private ToastsManager toastsManager;
         private List<Reminder> reminders;
 
         private int maxRemindersInContainer;
         private int maxPagesIndex;
         private int pageIndex = 0;
 
-        public MainWindow(User activeUser)
+        public MainWindow()
         {
             Instance = this;
             InitializeComponent();
             reminders = new List<Reminder>();
-            toastsManager = ToastsManager.Instance;
-            ActiveUser = activeUser;
+
             ReadDatabase();
         }
-
-        public static MainWindow GetMainWindow(User loggedUser)
-        {
-            return Instance != null ? Instance : new MainWindow(loggedUser);
-        }
-
         public async void ReadDatabase()
         {
             await Task.Delay(200);
@@ -60,12 +53,17 @@ namespace DateReminder
 
             using (var context = ReminderDBContext.GetContext())
             {
-                maxPagesIndex = (int)Math.Ceiling((double)context.Reminders.Where(p => p.User.Id == ActiveUser.Id).Count() / maxRemindersInContainer) - 1;
+                if(context.Reminders.Count() == 0)
+                {
+                    return;
+                }
+                maxPagesIndex = (int)Math.Ceiling((double)context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() / maxRemindersInContainer) - 1;
                 if(pageIndex > maxPagesIndex)
                 {
                     pageIndex = maxPagesIndex;
                 }
-                reminders = await context.Reminders.Where(p => p.User.Id == ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
+
+                reminders = await context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
             }
 
             if (reminders != null)
@@ -76,7 +74,7 @@ namespace DateReminder
         }
         private async void NewReminder_Click(object sender, RoutedEventArgs e)
         {
-            new UpdateReminderWindow(ActiveUser).ShowDialog();
+            new UpdateReminderWindow().ShowDialog();
         }
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -84,7 +82,7 @@ namespace DateReminder
             IEnumerable<Reminder> filteredReminders;
             using (var context = ReminderDBContext.GetContext())
             {
-                filteredReminders = await context.Reminders.Where(c => c.User.Id == ActiveUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
+                filteredReminders = await context.Reminders.Where(c => c.User.Id == CoreWindow.Instance.ActiveUser.Id && c.Title.ToLower().Contains(searchTextBox.Text.ToLower())).ToListAsync();
             }
             RemindersListView.ItemsSource = filteredReminders;
         }

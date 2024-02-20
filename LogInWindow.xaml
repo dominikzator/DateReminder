@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DateReminder"
         mc:Ignorable="d"
-        Title="LogInWindow" Height="500" Width="800" Background="#FFF9B84F" ResizeMode="NoResize">
+        Title="Log In" Height="500" Width="800" Background="#FFF9B84F" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label Content="Login:" FontFamily="MV Boli" Margin="0,9,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="79" FontSize="50"/>
         <Label Content="Password:" FontFamily="MV Boli" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="70" FontSize="50" Margin="60,138,60,0" Grid.RowSpan="1"/>

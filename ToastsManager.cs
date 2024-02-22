@@ -49,22 +49,32 @@ namespace DateReminder
         private void InitializeTimer()
         {
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 5000);
+            dispatcherTimer.Tick += SynchronizeReminders;
+            dispatcherTimer.Interval = TimeSpan.FromHours(1);
             dispatcherTimer.Start();
         }
-        private async void Tick(object sender, EventArgs e)
+        public async void SynchronizeReminders(object sender, EventArgs e)
         {
+            SynchronizeRemindersWithDelay(sender, e);
+        }
+        public async void SynchronizeRemindersWithDelay(object sender = null, EventArgs e = null, float delayInSeconds = 0f)
+        {
+            await Task.Delay((int)(delayInSeconds * 1000));
             Console.WriteLine("Tick");
             Console.WriteLine("DateTime.Now: " + DateTime.Now);
             using (var context = new ReminderDBContext())
             {
+                if(context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
+                {
+                    Console.WriteLine("No reminders for current user");
+                    return;
+                }
                 //Try rescedule cyclic reminders to the year
                 foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id))
                 {
                     if (reminder.TargetDate.Year <= DateTime.Now.Year && reminder.TargetDate.Month <= DateTime.Now.Month && reminder.TargetDate.Day < DateTime.Now.Day)
                     {
-                        if(reminder.IsCyclic)
+                        if (reminder.IsCyclic)
                         {
                             Console.WriteLine($"Reminder, title: {reminder.Title}, targetdate: {reminder.TargetDate.ToShortDateString()}, IsCyclic: {reminder.IsCyclic}, Reminded: {reminder.Reminded}");
                             reminder.TargetDate = new DateTime(reminder.TargetDate.Year + 1, reminder.TargetDate.Month, reminder.TargetDate.Day);
@@ -73,14 +83,14 @@ namespace DateReminder
                     }
                 }
                 await context.SaveChangesAsync();
-                if(MainWindow.IsActive)
+                if (MainWindow.IsActive)
                 {
                     SingletonWindow<MainWindow>.Instance.WindowInstance.ReadDatabase();
                 }
                 //Fire corresponding Reminders Notifications
                 foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && !p.Reminded))
                 {
-                    if(DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
+                    if (DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
                     {
                         int daysToEvent = reminder.TargetDate.Subtract(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
                         string dayString = daysToEvent == 1 ? "day" : "days";

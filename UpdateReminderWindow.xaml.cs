@@ -26,6 +26,7 @@ namespace DateReminder
         private const string TooLongTitle = "Title can't be longer than 30 characters";
         private const string IncorrectDateFormat= "Target Date format is incorrect. The correct format is YYYY-MM-DD";
         private const string IncorrectDaysToNotifyFormat= "Incorrect format of Days to Notify, Please insert a digit";
+        private const string PreviousDateMessage= "A Reminder needs to have future target date";
 
         private const string TargetDatePattern = "\\d{4}\\-(0[1-9]|1[012]|[1-9])\\-(0[1-9]|[12][0-9]|3[01]|[1-9])$";
 
@@ -81,10 +82,16 @@ namespace DateReminder
                 PrintErrorMessage(IncorrectDaysToNotifyFormat);
                 return;
             }
+            var splittedDate = TargetDateTextBox.Text.Split('-');
+            var userDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
+
+            if (userDate.Year <= DateTime.Now.Year && userDate.Month <= DateTime.Now.Month && userDate.Day < DateTime.Now.Day)
+            {
+                PrintErrorMessage(PreviousDateMessage);
+                return;
+            }
             using (var context = ReminderDBContext.GetContext())
             {
-                var splittedDate = TargetDateTextBox.Text.Split('-');
-
 
                 if(_reminder == null)
                 {
@@ -105,6 +112,7 @@ namespace DateReminder
                     {
                         this.Close();
                         MainWindow.Instance.ReadDatabase();
+                        ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds:3f);
                     });
                 }
                 else
@@ -121,6 +129,7 @@ namespace DateReminder
                     {
                         this.Close();
                         MainWindow.Instance.ReadDatabase();
+                        ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
                     });
                 }
             }

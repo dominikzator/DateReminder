@@ -8,7 +8,7 @@
         mc:Ignorable="d"
 
         
-        Title="Date Reminder" Height="450" Width="800" Background="#FFF9B84F" ResizeMode="CanMinimize" WindowState="Maximized" Icon = "RingBell.png" Topmost="True">
+        Title="Date Reminder" Height="450" Width="800" Background="#FFF9B84F" WindowState="Maximized" Icon = "RingBell.png" Topmost="True">
     
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>

@@ -33,11 +33,6 @@ namespace DateReminder
         }
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            if(!ReminderDBContext.IsDisposed)
-            {
-                Console.WriteLine("DB Was in use, suspending action");
-                return;
-            }
             Console.WriteLine("RegisterButton_Click");
             if(IsRegisterLegit())
             {
@@ -49,7 +44,7 @@ namespace DateReminder
                         user = new User()
                         {
                             UserName = LoginTextBox.Text,
-                            Password = PasswordTextBox.Text,
+                            Password = PasswordTextBox.Password,
                             UserSettings = new UserSettings
                             {
                                 SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
@@ -62,7 +57,7 @@ namespace DateReminder
                         user = new User()
                         {
                             UserName = LoginTextBox.Text,
-                            Password = PasswordTextBox.Text,
+                            Password = PasswordTextBox.Password,
                             UserSettingsId = context.UserSettings.First().Id,
                         };
                     }
@@ -83,13 +78,13 @@ namespace DateReminder
         private void ResetLabels()
         {
             LoginTextBox.Text = "";
-            PasswordTextBox.Text = "";
-            RepeatPasswordTextBox.Text = "";
+            PasswordTextBox.Password = "";
+            RepeatPasswordTextBox.Password = "";
         }
 
         private bool IsRegisterLegit()
         {
-            if(LoginTextBox.Text == "" || PasswordTextBox.Text == "" || RepeatPasswordTextBox.Text == "")
+            if(LoginTextBox.Text == "" || PasswordTextBox.Password == "" || RepeatPasswordTextBox.Password == "")
             {
                 Console.WriteLine("Login or Password Empty");
                 PrintErrorMessage(OneOfTheFieldEmptyMessage);
@@ -104,7 +99,7 @@ namespace DateReminder
                     PrintErrorMessage(AccountExistsMessage);
                     return false;
                 }
-                if(PasswordTextBox.Text != RepeatPasswordTextBox.Text)
+                if(PasswordTextBox.Password != RepeatPasswordTextBox.Password)
                 {
                     Console.WriteLine("Password doesn't match");
                     PrintErrorMessage(PasswordsNotTheSameMessage);

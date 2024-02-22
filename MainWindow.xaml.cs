@@ -56,7 +56,7 @@ namespace DateReminder
 
             using (var context = ReminderDBContext.GetContext())
             {
-                if(context.Reminders.Count() == 0)
+                if(context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
                 {
                     return;
                 }
@@ -69,7 +69,7 @@ namespace DateReminder
                 reminders = await context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
             }
 
-            if (reminders != null)
+            if (reminders.Count != 0)
             {
                 RemindersListView.ItemsSource = reminders;
             }
@@ -94,6 +94,12 @@ namespace DateReminder
         {
             IsActive = false;
             base.OnClosed(e);
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            //ReadDatabase();
+            base.OnRenderSizeChanged(sizeInfo);
         }
 
         private void PreviousPageButton_Click(object sender, RoutedEventArgs e)

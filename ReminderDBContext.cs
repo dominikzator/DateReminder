@@ -16,23 +16,8 @@ namespace DateReminder
         public DbSet<UserSettings> UserSettings { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
 
-        public static bool IsDisposed = true;
-
         public ReminderDBContext()
         {
-            IsDisposed = false;
-        }
-
-        public override void Dispose()
-        {
-            IsDisposed = true;
-            base.Dispose();
-        }
-
-        public override ValueTask DisposeAsync()
-        {
-            IsDisposed = true;
-            return base.DisposeAsync();
         }
 
         public static ReminderDBContext GetContext()

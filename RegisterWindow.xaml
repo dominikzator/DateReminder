@@ -10,8 +10,8 @@
         <Label Content="Login:" FontFamily="MV Boli" Margin="0,-22,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40"/>
         <Label Content="Password:" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="146" FontSize="40" Margin="0,83,0,0"/>
         <TextBox x:Name="LoginTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,77,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="PasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,182,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
-        <TextBox x:Name="RepeatPasswordTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="90,283,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        <PasswordBox x:Name="PasswordTextBox" FontFamily="MV Boli" Margin="90,182,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        <PasswordBox x:Name="RepeatPasswordTextBox" FontFamily="MV Boli" Margin="90,283,88,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
         <Label x:Name="IncorrectRegisterLabel" Content="Incorrect Login or Password, Please try again" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="46" FontSize="14" Margin="0,325,0,0" Background="#00000000" Foreground="#FFBD0000"/>
 
         <Button x:Name="RegisterButton" Content="Register" Margin="89,367,92,0" FontSize="18" FontFamily="MV Boli" VerticalAlignment="Top" Padding="0,0,0,0" VerticalContentAlignment="Top" Background="#FFEC8C00" Click="RegisterButton_Click" RenderTransformOrigin="0.5,0.5">

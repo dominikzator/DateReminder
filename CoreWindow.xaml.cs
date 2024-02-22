@@ -27,7 +27,7 @@ namespace DateReminder
     public partial class CoreWindow : Window
     {
         private int attempts;
-        private int maxAttempts = 3;
+        private int maxAttempts = 10;
 
         private SecureString securePwd = new SecureString();
         private ConsoleKeyInfo key;
@@ -91,6 +91,7 @@ namespace DateReminder
 
         private void TryReadFromTempFile()
         {
+            Console.WriteLine("TryReadFromTempFile attempt: " + attempts);
             try
             {
                 using (StreamReader sr = File.OpenText("TempUser.txt"))
@@ -123,6 +124,10 @@ namespace DateReminder
                     }
                     User loggedUser;
                     TryGetUser(login, decryptedPassword, out loggedUser);
+                    if (loggedUser != null)
+                    {
+                        ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
+                    }
                 }
             }
             catch (Exception ex)
@@ -130,6 +135,7 @@ namespace DateReminder
                 if (ex is IOException)
                 {
                     Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
+                    SingletonWindow<LogInWindow>.Instance.WindowInstance.Show();
                 }
                 else if (ex is SqlException)
                 {
@@ -141,12 +147,12 @@ namespace DateReminder
                     }
                     else
                     {
-                        Console.WriteLine("More than 3 Attempts");
+                        Console.WriteLine($"More than {maxAttempts} Attempts");
                         SingletonWindow<LogInWindow>.Instance.WindowInstance.Show();
                     }
                 }
             }
-            Console.WriteLine("After 3 Attempts");
+            Console.WriteLine($"After {maxAttempts} Attempts");
         }
         public async void TryCacheData(string login, string password)
         {
@@ -166,10 +172,7 @@ namespace DateReminder
         public bool TryGetUser(string login, string password, out User? loggedUser)
         {
             loggedUser = null;
-            if (!ReminderDBContext.IsDisposed)
-            {
-                return false;
-            }
+
             using (var context = ReminderDBContext.GetContext())
             {
                 if (context.Users.Count() == 0)

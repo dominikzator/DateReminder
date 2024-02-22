@@ -29,6 +29,8 @@ namespace DateReminder
     {
         private CancellationTokenSource printIncorrectLabelTokenSource;
 
+        private string passwordTyped;
+
         public LogInWindow()
         {
             InitializeComponent();
@@ -40,7 +42,7 @@ namespace DateReminder
         private void SignInButton_Click(object sender, RoutedEventArgs? e = null)
         {
             User? loggedUser;
-            if (CoreWindow.Instance.TryGetUser(LoginTextBox.Text, PasswordTextBox.Text, out loggedUser))
+            if (CoreWindow.Instance.TryGetUser(LoginTextBox.Text, PasswordTextBox.Password, out loggedUser))
             {
                 if ((bool)RememberMeCheckBox.IsChecked)
                 {
@@ -48,6 +50,7 @@ namespace DateReminder
                 }
                 SingletonWindow<MainWindow>.Instance.WindowInstance.Show();
                 Close();
+                ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
             }
             else
             {

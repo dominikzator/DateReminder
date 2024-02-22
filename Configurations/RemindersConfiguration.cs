@@ -24,7 +24,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 08, 21),
                     UserId = 1,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
                 new Reminder
                 {
@@ -34,7 +34,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 03, 21),
                     UserId = 1,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
                 new Reminder
                 {
@@ -44,7 +44,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 12, 24),
                     UserId = 1,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
 
                 new Reminder
@@ -55,7 +55,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 11, 11),
                     UserId = 2,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
                 new Reminder
                 {
@@ -65,7 +65,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 05, 1),
                     UserId = 2,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
 
                 new Reminder
@@ -76,7 +76,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 2, 9),
                     UserId = 3,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = true,
+                    Type = Reminder.ReminderType.ANNUAL,
                 },
                 new Reminder
                 {
@@ -86,7 +86,7 @@ namespace DateReminder.Configurations
                     TargetDate = new DateTime(2024, 2, 28),
                     UserId = 1,
                     SecondsToNotify = UserSettings.GetDefaultSecondsToNotify(),
-                    IsCyclic = false,
+                    Type = Reminder.ReminderType.NON_CYCLIC,
                 }
             );
         }

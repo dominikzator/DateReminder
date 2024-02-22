@@ -14,16 +14,12 @@
 
         <TextBox x:Name="DaysToNotifyTextBox" TextWrapping="Wrap" FontFamily="MV Boli" Margin="276,194,276,0" FontSize="20" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="DaysToNotifyTextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
         <Label Content="Days To Notify:" FontFamily="MV Boli" Margin="0,156,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="39" FontSize="20"/>
-        <CheckBox x:Name="IsCyclicCheckBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="116" Height="40" VerticalContentAlignment="Center" Padding="0,0,0,0" HorizontalContentAlignment="Center" FontFamily="MV Boli" Margin="0,238,0,0" MinWidth="40" MinHeight="40" FlowDirection="RightToLeft" Content="Is Cyclic" BorderThickness="0,0,0,0" RenderTransformOrigin="0.5,0.5" >
-            <CheckBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="2" ScaleY="2"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </CheckBox.RenderTransform>
-        </CheckBox>
+        <ComboBox SelectedIndex="0" x:Name="ReminderTypeBox" Width="250" Height="40" Margin="300,238,295,166" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0">
+            <ComboBoxItem>Non Cyclic</ComboBoxItem>
+            <ComboBoxItem>Weekly</ComboBoxItem>
+            <ComboBoxItem>Monthly</ComboBoxItem>
+            <ComboBoxItem>Annual</ComboBoxItem>
+        </ComboBox>
         <CheckBox x:Name="RemindedCheckBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="116" Height="40" VerticalContentAlignment="Center" Padding="0,0,0,0" HorizontalContentAlignment="Center" FontFamily="MV Boli" Margin="0,288,0,0" MinWidth="40" MinHeight="40" FlowDirection="RightToLeft" Content="Reminded" BorderThickness="0,0,0,0" RenderTransformOrigin="0.5,0.5" >
             <CheckBox.RenderTransform>
                 <TransformGroup>

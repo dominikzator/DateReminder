@@ -9,7 +9,7 @@
         <StackPanel Margin="5">
             <TextBlock x:Name="TitleText" Text="Urodziny Sylwii" FontSize="20" FontWeight="Bold"/>
             <TextBlock x:Name="TargetDateText" Text="Data: 21.08.2024" FontSize="15" Foreground="DodgerBlue"/>
-            <TextBlock x:Name="IsCyclicText" Text="Priorytet: " FontSize="15" FontStyle="Italic"/>
+            <TextBlock x:Name="IsCyclicText" Text="Type: " FontSize="15" FontStyle="Italic"/>
             <TextBlock x:Name="RemindedText" Text="Reminded: " FontSize="15" FontStyle="Italic"/>
         </StackPanel>
         <Image Height="40" Width="40" Source="/icons8-error-48.png" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" IsHitTestVisible="False" Panel.ZIndex="1"/>

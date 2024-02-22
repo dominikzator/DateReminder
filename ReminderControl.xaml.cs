@@ -46,8 +46,7 @@ namespace DateReminder
             {
                 control.TitleText.Text = (e.NewValue as Reminder).Title;
                 control.TargetDateText.Text = (e.NewValue as Reminder).TargetDate.ToShortDateString();
-                string additionText = (e.NewValue as Reminder).IsCyclic ? "Yes" : "No";
-                control.IsCyclicText.Text = "Is cyclic: " + additionText;
+                control.IsCyclicText.Text = "Type: " + Reminder.ReminderTypeStrings[(int)((Reminder)e.NewValue).Type];
                 string remindedText = (e.NewValue as Reminder).Reminded ? "Yes" : "No";
                 control.RemindedText.Text = "Reminded: " + remindedText;
             }

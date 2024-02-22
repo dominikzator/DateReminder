@@ -70,16 +70,11 @@ namespace DateReminder
                     return;
                 }
                 //Try rescedule cyclic reminders to the year
-                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id))
+                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && p.Type != 0))
                 {
-                    if (reminder.TargetDate.Year <= DateTime.Now.Year && reminder.TargetDate.Month <= DateTime.Now.Month && reminder.TargetDate.Day < DateTime.Now.Day)
+                    while (reminder.TargetDate < DateTime.Now && (reminder.TargetDate.Year != DateTime.Now.Year || reminder.TargetDate.Month != DateTime.Now.Month || reminder.TargetDate.Day != DateTime.Now.Day))
                     {
-                        if (reminder.IsCyclic)
-                        {
-                            Console.WriteLine($"Reminder, title: {reminder.Title}, targetdate: {reminder.TargetDate.ToShortDateString()}, IsCyclic: {reminder.IsCyclic}, Reminded: {reminder.Reminded}");
-                            reminder.TargetDate = new DateTime(reminder.TargetDate.Year + 1, reminder.TargetDate.Month, reminder.TargetDate.Day);
-                            reminder.Reminded = false;
-                        }
+                        TryRescheduleReminder(reminder);
                     }
                 }
                 await context.SaveChangesAsync();
@@ -99,6 +94,31 @@ namespace DateReminder
                         OpenToast(reminder, titleMessage, $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
                     }
                 }
+            }
+        }
+        private void TryRescheduleReminder(Reminder reminder)
+        {
+            Console.WriteLine($"RESCHEDULE Reminder, title: {reminder.Title}, targetdate: {reminder.TargetDate.ToShortDateString()}, IsCyclic: {reminder.Type}, Reminded: {reminder.Reminded}");
+            switch (reminder.Type)
+            {
+                case Reminder.ReminderType.WEEKLY:
+                    {
+                        reminder.TargetDate = reminder.TargetDate.AddDays(7);
+                        reminder.Reminded = false;
+                        break;
+                    }
+                case Reminder.ReminderType.MONTHLY:
+                    {
+                        reminder.TargetDate = reminder.TargetDate.AddMonths(1);
+                        reminder.Reminded = false;
+                        break;
+                    }
+                case Reminder.ReminderType.ANNUAL:
+                    {
+                        reminder.TargetDate = new DateTime(reminder.TargetDate.Year + 1, reminder.TargetDate.Month, reminder.TargetDate.Day);
+                        reminder.Reminded = false;
+                        break;
+                    }
             }
         }
         private async Task OpenToast(Reminder reminder, string toastTitle, string toastDescription)

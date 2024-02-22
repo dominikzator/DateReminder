@@ -27,6 +27,7 @@ namespace DateReminder
         private const string IncorrectDateFormat= "Target Date format is incorrect. The correct format is YYYY-MM-DD";
         private const string IncorrectDaysToNotifyFormat= "Incorrect format of Days to Notify, Please insert a digit";
         private const string PreviousDateMessage= "A Reminder needs to have future target date";
+        private const string DateNotExists= "You selected a Date that doesn't exist";
 
         private const string TargetDatePattern = "\\d{4}\\-(0[1-9]|1[012]|[1-9])\\-(0[1-9]|[12][0-9]|3[01]|[1-9])$";
 
@@ -52,7 +53,7 @@ namespace DateReminder
             TitleTextBox.Text = reminder.Title;
             TargetDateTextBox.Text = $"{reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}";
             DaysToNotifyTextBox.Text = (reminder.SecondsToNotify / 3600 / 24).ToString();
-            IsCyclicCheckBox.IsChecked = reminder.IsCyclic;
+            ReminderTypeBox.SelectedIndex = (int)reminder.Type;
             RemindedCheckBox.IsChecked = reminder.Reminded;
         }
         private bool AreFieldsEmpty() => TitleTextBox.Text.Length == 0 || TargetDateTextBox.Text.Length == 0 || DaysToNotifyTextBox.Text.Length == 0;
@@ -83,9 +84,20 @@ namespace DateReminder
                 return;
             }
             var splittedDate = TargetDateTextBox.Text.Split('-');
-            var userDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
-
-            if (userDate.Year <= DateTime.Now.Year && userDate.Month <= DateTime.Now.Month && userDate.Day < DateTime.Now.Day)
+            DateTime userDate = DateTime.MinValue;
+            try
+            {
+                userDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
+            }
+            catch (Exception ex)
+            {
+                if(ex is ArgumentOutOfRangeException)
+                {
+                    PrintErrorMessage(DateNotExists);
+                }
+                return;
+            }
+            if (userDate < DateTime.Now && (userDate.Year != DateTime.Now.Year || userDate.Month != DateTime.Now.Month || userDate.Day != DateTime.Now.Day))
             {
                 PrintErrorMessage(PreviousDateMessage);
                 return;
@@ -102,7 +114,7 @@ namespace DateReminder
                         Priority = 5,
                         SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24,
                         UserId = CoreWindow.Instance.ActiveUser.Id,
-                        IsCyclic = (bool)IsCyclicCheckBox.IsChecked,
+                        Type = (Reminder.ReminderType)ReminderTypeBox.SelectedIndex,
                         Reminded = (bool)RemindedCheckBox.IsChecked
                     };
                     await context.AddAsync(reminder);
@@ -111,8 +123,8 @@ namespace DateReminder
                     InfoWindow.ShowReminderAddedWindow(() =>
                     {
                         this.Close();
+                        ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
                         MainWindow.Instance.ReadDatabase();
-                        ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds:3f);
                     });
                 }
                 else
@@ -120,7 +132,7 @@ namespace DateReminder
                     _reminder.Title = TitleTextBox.Text;
                     _reminder.TargetDate = new DateTime(int.Parse(splittedDate[0]), int.Parse(splittedDate[1]), int.Parse(splittedDate[2]));
                     _reminder.SecondsToNotify = int.Parse(DaysToNotifyTextBox.Text) * 3600 * 24;
-                    _reminder.IsCyclic = (bool)IsCyclicCheckBox.IsChecked;
+                    _reminder.Type = (Reminder.ReminderType)ReminderTypeBox.SelectedIndex;
                     _reminder.Reminded = (bool)RemindedCheckBox.IsChecked;
                     context.Update(_reminder);
                     await context.SaveChangesAsync();
@@ -128,8 +140,8 @@ namespace DateReminder
                     InfoWindow.ShowReminderUpdatedWindow(() =>
                     {
                         this.Close();
-                        MainWindow.Instance.ReadDatabase();
                         ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
+                        MainWindow.Instance.ReadDatabase();
                     });
                 }
             }

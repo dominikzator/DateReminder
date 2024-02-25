@@ -56,7 +56,7 @@ namespace DateReminder
 
             return base.SaveChangesAsync(cancellationToken);
         }
-
+        
         public override int SaveChanges()
         {
             var entries = ChangeTracker.Entries<BaseModel>().Where(p => p.State == EntityState.Added);

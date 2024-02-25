@@ -43,6 +43,8 @@ namespace DateReminder
 
         private ToastsManager toastsManager;
 
+        private User loggedUser;
+
         public CoreWindow()
         {
             Console.WriteLine("CoreWindow");
@@ -108,30 +110,29 @@ namespace DateReminder
                         }
                         else if (lineIndex == 1)
                         {
-                            try
-                            {
-                                using (var context = new ReminderDBContext())
-                                {
-                                    decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
-                                }
-                            }
-                            catch
-                            {
-                                return;
-                            }
+                            decryptedPassword = StringCipher.DecryptString(PasswordKey, s);
                         }
                         lineIndex++;
                     }
-                    User loggedUser;
                     TryGetUser(login, decryptedPassword, out loggedUser);
                     if (loggedUser != null)
                     {
                         ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
                     }
+                    else
+                    {
+                        Console.WriteLine($"Readed from temp file, but couldn't get a User from Database, attempts: {attempts}");
+                        if (++attempts < maxAttempts)
+                        {
+                            TryReadFromTempFile();
+                            return;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Catch!");
                 if (ex is IOException)
                 {
                     Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
@@ -139,7 +140,7 @@ namespace DateReminder
                 }
                 else if (ex is SqlException)
                 {
-                    Console.WriteLine("Couldn't login to database...");
+                    Console.WriteLine($"Couldn't login to database... Attempts: {attempts}");
                     if (++attempts < maxAttempts)
                     {
                         TryReadFromTempFile();

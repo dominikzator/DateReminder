@@ -40,6 +40,9 @@ namespace DateReminder
 
         public static bool trayInitialized;
 
+        private int maxAttempts = 10;
+        private int attempts = 0;
+
         public ToastsManager()
         {
             MaxToastsOnScreen = (int)(System.Windows.SystemParameters.PrimaryScreenHeight / (ToastWindowHeight + ToastMargin));
@@ -50,7 +53,7 @@ namespace DateReminder
         {
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += SynchronizeReminders;
-            dispatcherTimer.Interval = TimeSpan.FromHours(1);
+            dispatcherTimer.Interval = TimeSpan.FromHours(6);
             dispatcherTimer.Start();
         }
         public async void SynchronizeReminders(object sender, EventArgs e)
@@ -59,40 +62,62 @@ namespace DateReminder
         }
         public async void SynchronizeRemindersWithDelay(object sender = null, EventArgs e = null, float delayInSeconds = 0f)
         {
-            await Task.Delay((int)(delayInSeconds * 1000));
+            if(delayInSeconds > 0f)
+            {
+                await Task.Delay((int)(delayInSeconds * 1000));
+            }
             Console.WriteLine("Tick");
             Console.WriteLine("DateTime.Now: " + DateTime.Now);
-            using (var context = new ReminderDBContext())
+            try
             {
-                if(context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
+                Console.WriteLine($"Connecting to the database, attempt: {attempts}");
+                using (var context = new ReminderDBContext())
                 {
-                    Console.WriteLine("No reminders for current user");
-                    return;
-                }
-                //Try rescedule cyclic reminders to the year
-                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && p.Type != 0))
-                {
-                    while (reminder.TargetDate < DateTime.Now && (reminder.TargetDate.Year != DateTime.Now.Year || reminder.TargetDate.Month != DateTime.Now.Month || reminder.TargetDate.Day != DateTime.Now.Day))
+                    if (context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
                     {
-                        TryRescheduleReminder(reminder);
+                        Console.WriteLine("No reminders for current user");
+                        return;
                     }
-                }
-                await context.SaveChangesAsync();
-                if (MainWindow.IsActive)
-                {
-                    SingletonWindow<MainWindow>.Instance.WindowInstance.ReadDatabase();
-                }
-                //Fire corresponding Reminders Notifications
-                foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && !p.Reminded))
-                {
-                    if (DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
+                    //Try rescedule cyclic reminders to the year
+                    foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && p.Type != 0))
                     {
-                        int daysToEvent = reminder.TargetDate.Subtract(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
-                        string dayString = daysToEvent == 1 ? "day" : "days";
-                        string titleMessage = (daysToEvent == 0) ? $"Today is: {reminder.Title}" : $"Upcoming event in {daysToEvent} {dayString}: {reminder.Title}";
-                        Console.WriteLine("MATCHING reminder.Title: " + reminder.Title);
-                        OpenToast(reminder, titleMessage, $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
+                        while (reminder.TargetDate < DateTime.Now && (reminder.TargetDate.Year != DateTime.Now.Year || reminder.TargetDate.Month != DateTime.Now.Month || reminder.TargetDate.Day != DateTime.Now.Day))
+                        {
+                            TryRescheduleReminder(reminder);
+                        }
                     }
+                    await context.SaveChangesAsync();
+                    if (MainWindow.IsActive)
+                    {
+                        SingletonWindow<MainWindow>.Instance.WindowInstance.ReadDatabase();
+                    }
+                    //Fire corresponding Reminders Notifications
+                    foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && !p.Reminded))
+                    {
+                        if (DateTime.Now >= reminder.TargetDate.AddSeconds(-reminder.SecondsToNotify) && DateTime.Now <= reminder.TargetDate.AddDays(1))
+                        {
+                            int daysToEvent = reminder.TargetDate.Subtract(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
+                            string dayString = daysToEvent == 1 ? "day" : "days";
+                            string titleMessage = (daysToEvent == 0) ? $"Today is: {reminder.Title}" : $"Upcoming event in {daysToEvent} {dayString}: {reminder.Title}";
+                            Console.WriteLine("MATCHING reminder.Title: " + reminder.Title);
+                            OpenToast(reminder, titleMessage, $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
+                        }
+                    }
+
+                    attempts = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                attempts++;
+                Console.WriteLine($"{ex.Message}");
+                if(attempts < maxAttempts)
+                {
+                    SynchronizeRemindersWithDelay(3f);
+                }
+                else
+                {
+                    Console.WriteLine($"Couldn't connect to the database after {maxAttempts} tries");
                 }
             }
         }
@@ -141,7 +166,7 @@ namespace DateReminder
             Toasts.Add(toastWindow);
             toastWindow.Show();
             PositionToast(toastWindow);
-            ToastsIdsAlreadyShown.Add(toastWindow.Reminder.Id, true);
+            //ToastsIdsAlreadyShown.Add(toastWindow.Reminder.Id, true);
         }
         public void RemoveToast(ToastWindow toastWindow)
         {

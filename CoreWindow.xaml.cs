@@ -27,7 +27,7 @@ namespace DateReminder
     public partial class CoreWindow : Window
     {
         private int attempts;
-        private int maxAttempts = 10;
+        private int maxAttempts = 20;
 
         private SecureString securePwd = new SecureString();
         private ConsoleKeyInfo key;
@@ -44,6 +44,7 @@ namespace DateReminder
         private ToastsManager toastsManager;
 
         private User loggedUser;
+
 
         public CoreWindow()
         {
@@ -83,7 +84,14 @@ namespace DateReminder
             Console.WriteLine("OnTrayIconDoubleClick");
             if(ActiveUser != null)
             {
-                SingletonWindow<MainWindow>.Instance.WindowInstance.Show();
+                MainWindow mainWindow = SingletonWindow<MainWindow>.Instance.WindowInstance;
+                mainWindow.Show();
+
+                var task = Task.Factory.StartNew( () =>
+                {
+                    mainWindow.ReadDatabase();
+                    return true;
+                });
             }
             else
             {

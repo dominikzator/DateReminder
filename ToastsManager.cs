@@ -40,7 +40,7 @@ namespace DateReminder
 
         public static bool trayInitialized;
 
-        private int maxAttempts = 10;
+        private int maxAttempts = 20;
         private int attempts = 0;
 
         public ToastsManager()
@@ -53,7 +53,7 @@ namespace DateReminder
         {
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += SynchronizeReminders;
-            dispatcherTimer.Interval = TimeSpan.FromHours(6);
+            dispatcherTimer.Interval = TimeSpan.FromHours(1);
             dispatcherTimer.Start();
         }
         public async void SynchronizeReminders(object sender, EventArgs e)

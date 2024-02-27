@@ -34,6 +34,8 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Border>
+                <Label x:Name="ConnectingLabel" Content="Connecting to Database" FontFamily="MV Boli" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+
 
             </StackPanel>
         </Border>

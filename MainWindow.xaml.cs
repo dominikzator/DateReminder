@@ -40,40 +40,89 @@ namespace DateReminder
 
         public static bool IsActive { get; set; }
 
+        private int maxAttempts = 20;
+        private int attempts = 0;
+
+        private bool NeedsUpdate {  get; set; }
+
+        private System.Windows.Threading.DispatcherTimer updateDispatcher = new System.Windows.Threading.DispatcherTimer();
+
+
         public MainWindow()
         {
             Instance = this;
             InitializeComponent();
             reminders = new List<Reminder>();
             IsActive = true;
-
-            ReadDatabase();
+            updateDispatcher.Tick += CheckUpdate;
+            updateDispatcher.Interval = TimeSpan.FromMilliseconds(80);
         }
         public async void ReadDatabase()
         {
-            await Task.Delay(200);
-            maxRemindersInContainer = (int)((MainBorder.ActualHeight - (SearchTextBox.ActualHeight + NewReminderButton.ActualHeight + 30))/ (96.45f)) - 1;
-
-            using (var context = ReminderDBContext.GetContext())
+            Console.WriteLine("ReadDatabase");
+            NeedsUpdate = false;
+            updateDispatcher.Start();
+            try
             {
-                if(context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
+                Console.WriteLine($"Try ReadDatabase, attempts: {attempts}");
+                await Task.Delay(200);
+                maxRemindersInContainer = (int)((MainBorder.ActualHeight - (SearchTextBox.ActualHeight + NewReminderButton.ActualHeight + 30)) / (96.45f)) - 1;
+
+                using (var context = ReminderDBContext.GetContext())
                 {
-                    return;
-                }
-                maxPagesIndex = (int)Math.Ceiling((double)context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() / maxRemindersInContainer) - 1;
-                if(pageIndex > maxPagesIndex)
-                {
-                    pageIndex = maxPagesIndex;
+                    if (context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() == 0)
+                    {
+                        return;
+                    }
+                    maxPagesIndex = (int)Math.Ceiling((double)context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Count() / maxRemindersInContainer) - 1;
+                    if (pageIndex > maxPagesIndex)
+                    {
+                        pageIndex = maxPagesIndex;
+                    }
+
+                    reminders = await context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
                 }
 
-                reminders = await context.Reminders.Where(p => p.User.Id == CoreWindow.Instance.ActiveUser.Id).Skip(pageIndex * maxRemindersInContainer).Take(maxRemindersInContainer).ToListAsync();
+                if (reminders.Count != 0)
+                {
+                    Console.WriteLine("Assign reminders");
+                    NeedsUpdate = true;
+                }
+                attempts = 0;
             }
-
-            if (reminders.Count != 0)
+            catch(Exception ex)
             {
-                RemindersListView.ItemsSource = reminders;
+                attempts++;
+                Console.WriteLine(ex.ToString());
+                if (attempts < maxAttempts)
+                {
+                    ReadDatabase();
+                }
+                else
+                {
+                    Console.WriteLine($"Couldn't connect to the database after {maxAttempts} tries");
+                }
             }
+        }
+        public async void CheckUpdate(object sender, EventArgs e)
+        {
+            if (SingletonWindow<MainWindow>.Instance.WindowInstance.NeedsUpdate)
+            {
+                SingletonWindow<MainWindow>.Instance.WindowInstance.UpdateWindow();
+                updateDispatcher.Stop();
+            }
+        }
+        public void UpdateWindow()
+        {
+            Console.WriteLine("UpdateWindow");
+            HideConnectionText();
+            RemindersListView.ItemsSource = reminders;
             UpdatePageText();
+            NeedsUpdate = false;
+        }
+        private void HideConnectionText()
+        {
+            ConnectingLabel.Visibility = Visibility.Hidden;
         }
         private async void NewReminder_Click(object sender, RoutedEventArgs e)
         {
@@ -93,12 +142,12 @@ namespace DateReminder
         protected override void OnClosed(EventArgs e)
         {
             IsActive = false;
+            ConnectingLabel.Visibility = Visibility.Visible;
             base.OnClosed(e);
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            //ReadDatabase();
             base.OnRenderSizeChanged(sizeInfo);
         }
 

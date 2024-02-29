@@ -39,7 +39,7 @@ namespace DateReminder
 
         public User ActiveUser { get; private set; }
 
-        private TaskbarIcon taskBarIcon;
+        public TaskbarIcon TaskBarIcon;
 
         private ToastsManager toastsManager;
 
@@ -53,11 +53,11 @@ namespace DateReminder
             InitializeComponent();
             toastsManager = ToastsManager.Instance;
 
-            taskBarIcon = myNotifyIcon;
-            taskBarIcon.Icon = Resource1.BellIcon;
-            taskBarIcon.ToolTipText = "Double Click to open DateReminder Main Panel";
-            taskBarIcon.TrayMouseDoubleClick += OnTrayIconDoubleClick;
-            taskBarIcon.TrayRightMouseDown += OnTrayIconRightClickPressed;
+            TaskBarIcon = myNotifyIcon;
+            TaskBarIcon.Icon = Resource1.BellIcon;
+            TaskBarIcon.ToolTipText = "Double Click to open DateReminder Main Panel";
+            TaskBarIcon.TrayMouseDoubleClick += OnTrayIconDoubleClick;
+            TaskBarIcon.TrayRightMouseDown += OnTrayIconRightClickPressed;
             //QuitMenuItem.Icon = Resource1.cancel_icon;
             QuitMenuItem.Click += (object sender, RoutedEventArgs e) => {
                 Console.WriteLine("QUIT APP");
@@ -122,9 +122,11 @@ namespace DateReminder
                         }
                         lineIndex++;
                     }
-                    TryGetUser(login, decryptedPassword, out loggedUser);
+                    bool tryGetUser = TryGetUser(login, decryptedPassword, out loggedUser);
+                    Console.WriteLine("tryGetUser: " + tryGetUser);
                     if (loggedUser != null)
                     {
+                        Console.WriteLine("Logged User initialized, triggering Notifications");
                         ToastsManager.Instance.SynchronizeRemindersWithDelay(delayInSeconds: 3f);
                     }
                     else
@@ -141,6 +143,7 @@ namespace DateReminder
             catch (Exception ex)
             {
                 Console.WriteLine("Catch!");
+                Console.WriteLine(ex.ToString());
                 if (ex is IOException)
                 {
                     Console.WriteLine("Couldn't find a TempFile, opening LoginWindow...");
@@ -159,6 +162,11 @@ namespace DateReminder
                         Console.WriteLine($"More than {maxAttempts} Attempts");
                         SingletonWindow<LogInWindow>.Instance.WindowInstance.Show();
                     }
+                }
+                else
+                {
+                    TryReadFromTempFile();
+                    return;
                 }
             }
             Console.WriteLine($"After {maxAttempts} Attempts");

@@ -53,14 +53,14 @@ namespace DateReminder
         {
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += SynchronizeReminders;
-            dispatcherTimer.Interval = TimeSpan.FromHours(1);
+            dispatcherTimer.Interval = TimeSpan.FromHours(6);
             dispatcherTimer.Start();
         }
         public async void SynchronizeReminders(object sender, EventArgs e)
         {
             SynchronizeRemindersWithDelay(sender, e);
         }
-        public async void SynchronizeRemindersWithDelay(object sender = null, EventArgs e = null, float delayInSeconds = 0f)
+        public async void SynchronizeRemindersWithDelay(object sender = null, EventArgs e = null, float delayInSeconds = 0f, bool initialSynchronize = false)
         {
             if(delayInSeconds > 0f)
             {
@@ -91,6 +91,7 @@ namespace DateReminder
                     {
                         SingletonWindow<MainWindow>.Instance.WindowInstance.ReadDatabase();
                     }
+                    int matchingNotifications = 0;
                     //Fire corresponding Reminders Notifications
                     foreach (var reminder in context.Reminders.Where(p => p.UserId == CoreWindow.Instance.ActiveUser.Id && !p.Reminded))
                     {
@@ -101,7 +102,13 @@ namespace DateReminder
                             string titleMessage = (daysToEvent == 0) ? $"Today is: {reminder.Title}" : $"Upcoming event in {daysToEvent} {dayString}: {reminder.Title}";
                             Console.WriteLine("MATCHING reminder.Title: " + reminder.Title);
                             OpenToast(reminder, titleMessage, $"Target date: {reminder.TargetDate.Year}-{reminder.TargetDate.Month}-{reminder.TargetDate.Day}");
+                            matchingNotifications++;
                         }
+                    }
+                    Console.WriteLine("matchingNotifications: " + matchingNotifications);
+                    if(matchingNotifications == 0)
+                    {
+                        CoreWindow.Instance.TaskBarIcon.ShowBalloonTip("Date Reminder", "No upcoming reminders", BalloonIcon.Info);
                     }
 
                     attempts = 0;
